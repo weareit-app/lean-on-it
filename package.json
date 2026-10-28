@@ -1,0 +1,33 @@
+{
+  "name": "lean-on-it",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run check:repo",
+    "check:repo": "node tools/skills-sync/sync-skills.mjs --check && node tools/decision-records/check-no-adr-folder.mjs && node tools/action-pins/check-action-pins.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "biome ci --error-on-warnings .",
+    "format": "biome format --write .",
+    "test": "vitest run",
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}
