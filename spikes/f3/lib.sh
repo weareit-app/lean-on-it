@@ -16,6 +16,11 @@ PIDS_LIMIT=64         # pids.max
 CPUS=1                # cpu.max quota/period
 TMPFS_SIZE=64m        # the only writable path, /tmp
 SANDBOX_UID=65534:65534
+# RLIMIT_NOFILE inside the sandbox. import Mathlib opens several files per
+# module (.olean, .olean.private, .olean.server, .ir) across ~9000 files and
+# fails at the runtime default. Enforced by gVisor's own kernel; its memory
+# counts against the cgroup.
+NOFILE=65536
 
 # The full set of sandbox flags. No -v/--mount, no published ports, no socket.
 sandbox_flags() {
@@ -30,6 +35,7 @@ sandbox_flags() {
     --memory="$MEM_LIMIT" --memory-swap="$MEM_LIMIT" \
     --pids-limit="$PIDS_LIMIT" \
     --cpus="$CPUS" \
+    --ulimit "nofile=${NOFILE}:${NOFILE}" \
     --env-file=/dev/null
 }
 
@@ -44,6 +50,24 @@ host_readback() {
     "$id"
   echo "-- host processes for this sandbox"
   ps -eo pid,user,args | grep -F "$full" | grep -v grep | cut -c1-220 || true
+  echo "-- OCI spec runsc was given (host bundle config.json)"
+  sudo python3 -I - "/run/containerd/io.containerd.runtime.v2.task/moby/$full/config.json" <<'PY'
+import json, sys
+c = json.load(open(sys.argv[1]))
+p = c["process"]
+caps = p.get("capabilities", {})
+print("user:", p["user"].get("uid"), p["user"].get("gid"), "additionalGids:", p["user"].get("additionalGids"))
+print("noNewPrivileges:", p.get("noNewPrivileges"))
+print("capabilities:", {k: v for k, v in caps.items()})
+print("rlimits:", p.get("rlimits"))
+print("env names:", sorted(e.split("=", 1)[0] for e in p.get("env", [])))
+print("root:", c["root"])
+print("mounts:", [(m["destination"], m.get("type"), m.get("source"), m.get("options")) for m in c["mounts"]])
+print("namespaces:", [n["type"] + ("=" + n["path"] if n.get("path") else "") for n in c["linux"]["namespaces"]])
+r = c["linux"].get("resources", {})
+print("resources:", {k: r.get(k) for k in ("memory", "pids", "cpu")})
+print("cgroupsPath:", c["linux"].get("cgroupsPath"))
+PY
   echo "-- host cgroup"
   local cg
   cg=$(cgroup_dir "$full")

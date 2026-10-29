@@ -16,6 +16,9 @@ docker history --no-trunc --format '{{.Size}}\t{{.CreatedBy}}' "$LEAN_IMAGE" | c
 df -h /
 
 mapfile -t flags < <(sandbox_flags)
+# A canary in the launching process's environment. The OCI spec read back
+# below lists every variable name the sandbox process is given.
+export F3_CANARY_ENV=f3-canary-value-not-for-the-sandbox
 lean_cmd='LEAN_PATH=$(cat /opt/leanpath) exec lean /opt/work/Workload.lean'
 
 timed_run() {
