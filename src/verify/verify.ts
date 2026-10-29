@@ -10,7 +10,7 @@
 // The manifest records only what these steps established; anything they did
 // not establish is marked unavailable, and the statuses are derived from the
 // records, so a run can never report more than it found.
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import {
   existsSync,
   mkdtempSync,
@@ -32,6 +32,8 @@ import {
   type VerificationRun,
   type VerificationStep,
 } from "../evidence/manifest.ts";
+import type { EvidenceArtifact } from "../evidence/bundle.ts";
+import { sha256 } from "../evidence/digest.ts";
 import { deriveStatus, validateManifest } from "../evidence/validate.ts";
 import {
   allowlistedEnv,
@@ -73,12 +75,6 @@ export interface VerifyRequest {
   now?: () => Date;
 }
 
-export interface EvidenceArtifact {
-  /** Path inside the evidence bundle. */
-  name: string;
-  content: string;
-}
-
 export interface EvidenceBundle {
   manifest: EvidenceManifest;
   artifacts: EvidenceArtifact[];
@@ -95,9 +91,6 @@ const DEFAULT_MAX_OUTPUT_BYTES = 64 * 1024 * 1024;
 const TOOL_VERSION: string = JSON.parse(
   readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
 ).version;
-
-export const sha256 = (content: string | Buffer): string =>
-  `sha256:${createHash("sha256").update(content).digest("hex")}`;
 
 const lakeManifestSchema = z.object({
   packagesDir: z.string().optional(),
@@ -387,6 +380,7 @@ export async function verifyDeclaration(
 
     // Records.
     const found = probe?.found ? probe : null;
+    const missing = probe ? "declaration not found" : gap;
     const lookup: FormalDeclaration["lookup"] =
       probe === null
         ? { status: "unavailable", reason: gap }
@@ -441,7 +435,7 @@ export async function verifyDeclaration(
           }
         : {
             status: "unavailable",
-            reason: probe ? "declaration not found" : gap,
+            reason: missing,
           },
       environment: {
         lean:
@@ -478,7 +472,7 @@ export async function verifyDeclaration(
       "Imported modules were loaded from the workspace's existing build outputs, not rebuilt from source.",
       replayMode === "fresh"
         ? "leanchecker --fresh replayed the module and all its imports through the Lean kernel; it is the same kernel, not an external checker."
-        : "leanchecker replayed only the module's own declarations through the Lean kernel; imports were trusted as loaded.",
+        : "leanchecker replayed only the module's own declarations through the Lean kernel; imports were trusted as loaded, so the run is incomplete.",
       "The dependency closure follows constants referenced by types and values; it omits anything used only during elaboration.",
     ];
     if (
@@ -495,12 +489,13 @@ export async function verifyDeclaration(
       startedAt,
       finishedAt: now().toISOString(),
       axiomPolicy: { allowed: allowedAxioms },
+      kernelReplay: replayMode,
       steps,
       diagnostics,
       axioms: !found
         ? {
             status: "unavailable",
-            reason: probe ? "declaration not found" : gap,
+            reason: missing,
           }
         : "names" in found.axioms
           ? { status: "captured", names: [...found.axioms.names].sort() }
@@ -519,7 +514,7 @@ export async function verifyDeclaration(
           }
         : {
             status: "unavailable",
-            reason: probe ? "declaration not found" : gap,
+            reason: missing,
           },
       artifacts: artifacts.map((a) => ({
         name: a.name,

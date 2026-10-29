@@ -124,6 +124,8 @@ export const verificationRunSchema = z.strictObject({
   startedAt: timestamp,
   finishedAt: timestamp,
   axiomPolicy: z.strictObject({ allowed: z.array(text) }),
+  /** `fresh` replays the module and all its imports; `module` only the module. */
+  kernelReplay: z.enum(["fresh", "module"]),
   steps: z.array(stepSchema),
   diagnostics: evidence({
     errors: z.number().int().nonnegative(),

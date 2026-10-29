@@ -1,6 +1,5 @@
 // An evidence bundle on disk: `manifest.json` beside the artifacts it lists,
 // each checked against its recorded digest when the bundle is read.
-import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
@@ -8,13 +7,16 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, relative, resolve, sep } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { isWithin } from "../verify/trusted-workspace.ts";
+import { sha256 } from "./digest.ts";
 import type { EvidenceManifest } from "./manifest.ts";
 import { type ValidationResult, validateManifest } from "./validate.ts";
 
 export const MANIFEST_FILE = "manifest.json";
 
-export interface BundleArtifact {
+/** One file of an evidence bundle, named by its path inside the bundle. */
+export interface EvidenceArtifact {
   name: string;
   content: string;
 }
@@ -22,8 +24,7 @@ export interface BundleArtifact {
 /** The path of an artifact inside `dir`, refusing names that escape it. */
 function artifactPath(dir: string, name: string): string {
   const path = resolve(dir, name);
-  const rel = relative(resolve(dir), path);
-  if (rel === "" || rel.startsWith(`..${sep}`) || rel === "..")
+  if (path === resolve(dir) || !isWithin(resolve(dir), path))
     throw new Error(`artifact name escapes the bundle: ${name}`);
   return path;
 }
@@ -31,7 +32,7 @@ function artifactPath(dir: string, name: string): string {
 export function writeBundle(
   dir: string,
   manifest: EvidenceManifest,
-  artifacts: readonly BundleArtifact[],
+  artifacts: readonly EvidenceArtifact[],
 ): void {
   if (existsSync(dir) && readdirSync(dir).length > 0)
     throw new Error(`bundle directory is not empty: ${dir}`);
@@ -70,8 +71,7 @@ export function readBundle(dir: string): ValidationResult {
       errors.push(`artifact ${artifact.name}: ${error}`);
       continue;
     }
-    const digest = `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
-    if (digest !== artifact.digest || bytes.length !== artifact.bytes)
+    if (sha256(bytes) !== artifact.digest || bytes.length !== artifact.bytes)
       errors.push(
         `artifact ${artifact.name} does not match its recorded digest`,
       );

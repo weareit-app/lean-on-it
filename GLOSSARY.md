@@ -29,8 +29,12 @@ One typed discrepancy, or one point a reviewer could not settle, between an inte
 _Avoid_: issue, comment
 
 **Evidence manifest**:
-The versioned, machine-readable bundle that holds one intended claim, one formal declaration, one verification run and any fidelity reviews, as separate records, with the statuses derived from them.
+The versioned, machine-readable document that holds one intended claim, one formal declaration, one verification run and any fidelity reviews, as separate records, with the statuses derived from them.
 _Avoid_: certificate, report
+
+**Evidence bundle**:
+An evidence manifest stored together with every artifact it lists, each checkable against its recorded digest.
+_Avoid_: report, archive
 
 ## Statuses
 
@@ -39,7 +43,7 @@ What the verification run established: kernel-checked, rejected, or incomplete. 
 _Avoid_: verified, green
 
 **Kernel-checked**:
-Lean's kernel accepted the declaration in its formal environment, using only allowed axioms, and the run captured its elaborated type, axioms and dependency closure.
+Lean's kernel accepted the declaration in its formal environment, replaying the declaring module and all its imports, using only allowed axioms, and the run captured its elaborated type, axioms and dependency closure.
 _Avoid_: proven, correct
 
 **Incomplete**:

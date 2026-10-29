@@ -514,6 +514,13 @@
           ],
           "additionalProperties": false
         },
+        "kernelReplay": {
+          "type": "string",
+          "enum": [
+            "fresh",
+            "module"
+          ]
+        },
         "steps": {
           "type": "array",
           "items": {
@@ -793,6 +800,7 @@
         "startedAt",
         "finishedAt",
         "axiomPolicy",
+        "kernelReplay",
         "steps",
         "diagnostics",
         "axioms",

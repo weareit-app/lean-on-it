@@ -46,6 +46,32 @@ export function allowlistedEnv(
   return { ...env, ...extra };
 }
 
+// Each child leads its own process group (so a limit can kill Lake and its
+// Lean children together), which also takes it out of the parent's group:
+// Ctrl-C would not reach it. These groups are killed when the parent exits
+// or is interrupted.
+const liveGroups = new Set<number>();
+let cleanupInstalled = false;
+
+function killGroup(pid: number): void {
+  try {
+    process.kill(-pid, "SIGKILL");
+  } catch {}
+}
+
+function installCleanup(): void {
+  if (cleanupInstalled) return;
+  cleanupInstalled = true;
+  process.on("exit", () => {
+    for (const pid of liveGroups) killGroup(pid);
+  });
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const)
+    process.once(signal, () => {
+      for (const pid of liveGroups) killGroup(pid);
+      process.kill(process.pid, signal);
+    });
+}
+
 export const nodeCommandRunner: CommandRunner = (request) =>
   new Promise((resolve) => {
     const started = performance.now();
@@ -63,13 +89,13 @@ export const nodeCommandRunner: CommandRunner = (request) =>
       shell: false,
       detached: true,
     });
+    installCleanup();
+    const pid = child.pid;
+    if (pid) liveGroups.add(pid);
     const stop = (reason: NonNullable<CommandResult["failure"]>) => {
       failure ??= reason;
-      try {
-        if (child.pid) process.kill(-child.pid, "SIGKILL");
-      } catch {
-        child.kill("SIGKILL");
-      }
+      if (pid) killGroup(pid);
+      else child.kill("SIGKILL");
     };
     const timer = setTimeout(() => stop("timeout"), request.timeoutMs);
     const collect = (into: Buffer[]) => (chunk: Buffer) => {
@@ -85,6 +111,7 @@ export const nodeCommandRunner: CommandRunner = (request) =>
     });
     child.on("close", (code) => {
       clearTimeout(timer);
+      if (pid) liveGroups.delete(pid);
       resolve({
         exitCode: failure ? null : code,
         stdout: Buffer.concat(stdout).toString("utf8"),

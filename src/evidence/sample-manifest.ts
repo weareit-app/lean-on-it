@@ -62,6 +62,7 @@ export function sampleManifest(): EvidenceManifest {
       startedAt: "2026-10-28T12:00:00.000Z",
       finishedAt: "2026-10-28T12:01:00.000Z",
       axiomPolicy: { allowed: ["propext", "Classical.choice", "Quot.sound"] },
+      kernelReplay: "fresh",
       steps: (
         ["freshness", "elaborate", "inspect", "kernel_replay"] as const
       ).map((id) => ({

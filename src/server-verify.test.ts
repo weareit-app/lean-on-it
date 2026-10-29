@@ -86,6 +86,32 @@ describe("verify_declaration", () => {
     expect(launches).toEqual([]);
   });
 
+  it("records the operator fixed at start-up", async () => {
+    const client = await connect({
+      trustedRoots: [root],
+      operator: "op@example",
+    });
+    const result = await client.callTool({
+      name: "verify_declaration",
+      arguments: verifyArgs(),
+    });
+    expect(JSON.parse(text(result)).manifest.verification.operator).toBe(
+      "op@example",
+    );
+  });
+
+  it("does not name a missing trusted root to the caller", async () => {
+    const hidden = join(root, "private-research-root");
+    const client = await connect({ trustedRoots: [hidden] });
+    const result = await client.callTool({
+      name: "verify_declaration",
+      arguments: verifyArgs(),
+    });
+    expect(result.isError).toBe(true);
+    expect(text(result)).not.toContain("private-research-root");
+    expect(launches).toEqual([]);
+  });
+
   it("does not let tool arguments add trusted roots", async () => {
     const client = await connect({ trustedRoots: [] });
     const result = await client.callTool({
@@ -103,7 +129,11 @@ describe("verify_declaration", () => {
       arguments: verifyArgs(),
     });
     expect(result.isError).toBeFalsy();
-    const manifest = JSON.parse(text(result));
+    const { manifest, artifacts } = JSON.parse(text(result));
+    const listed = manifest.verification.artifacts.map(
+      (a: { name: string }) => a.name,
+    );
+    expect(artifacts.map((a: { name: string }) => a.name)).toEqual(listed);
     expect(manifest.schema).toBe("lean-on-it/evidence-manifest");
     // The substituted runner prints no probe record, so nothing is claimed.
     expect(manifest.status.kernel.status).toBe("incomplete");

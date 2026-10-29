@@ -141,6 +141,34 @@ describe("lean-on-it verify", () => {
     expect(existsSync(out)).toBe(false);
   });
 
+  it("refuses a malformed timeout before running anything", () => {
+    const out = join(dir, "evidence");
+    const { code, err } = cli(
+      ...verifyArgs(
+        out,
+        "--trusted-root",
+        join(dir, "trusted"),
+        "--timeout-seconds",
+        "abc",
+      ),
+    );
+    expect(code).toBe(64);
+    expect(err).toMatch(/timeout-seconds/);
+    expect(existsSync(out)).toBe(false);
+  });
+
+  it("refuses an unreadable claim file without a stack trace", () => {
+    writeFileSync(join(dir, "claim.json"), "{not json");
+    const out = join(dir, "evidence");
+    const { code, err } = cli(
+      ...verifyArgs(out, "--trusted-root", join(dir, "trusted")),
+    );
+    expect(code).toBe(64);
+    expect(err).toMatch(/cannot read --claim as JSON/);
+    expect(err).not.toMatch(/at .*\.ts:\d+/);
+    expect(existsSync(out)).toBe(false);
+  });
+
   it("refuses to write evidence into the workspace", () => {
     const out = join(workspace, "evidence");
     const { code, err } = cli(

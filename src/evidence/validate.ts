@@ -56,6 +56,11 @@ function deriveKernelStatus(
       incomplete.push(`step ${id} did not complete (${step.outcome})`);
   }
 
+  if (run.kernelReplay !== "fresh")
+    incomplete.push(
+      "the kernel replayed only the module's own declarations, not its imports",
+    );
+
   const { lookup } = declaration;
   if (lookup.status === "not_found")
     rejected.push(`declaration not found: ${lookup.reason}`);

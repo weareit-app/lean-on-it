@@ -1,7 +1,7 @@
 {
   "schema": "lean-on-it/evidence-manifest",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-10-29T00:57:01.053Z",
+  "generatedAt": "2026-10-29T01:05:59.283Z",
   "claim": {
     "id": "claim:learn-to-prove-it/graph-comp-iff",
     "statement": "Composing the graph of a function f with a relation r is substitution: an element a is related to c by the composite exactly when f a is related to c by r.",
@@ -121,15 +121,15 @@
     }
   },
   "verification": {
-    "id": "run:2026-10-29T00:56:07.746Z:a2a16fe5",
+    "id": "run:2026-10-29T01:05:02.252Z:eab43759",
     "declarationId": "declaration:LearnToProveIt.graph_comp_iff",
     "operator": null,
     "tool": {
       "name": "lean-on-it",
       "version": "0.0.0"
     },
-    "startedAt": "2026-10-29T00:56:07.746Z",
-    "finishedAt": "2026-10-29T00:57:01.053Z",
+    "startedAt": "2026-10-29T01:05:02.252Z",
+    "finishedAt": "2026-10-29T01:05:59.283Z",
     "axiomPolicy": {
       "allowed": [
         "propext",
@@ -137,6 +137,7 @@
         "Quot.sound"
       ]
     },
+    "kernelReplay": "fresh",
     "steps": [
       {
         "id": "freshness",
@@ -146,7 +147,7 @@
           "--no-build",
           "LearnToProveIt.Basic"
         ],
-        "durationMs": 1150,
+        "durationMs": 1149,
         "log": "logs/freshness.log",
         "exitCode": 0,
         "outcome": "passed",
@@ -161,7 +162,7 @@
           "--json",
           "LearnToProveIt/Basic.lean"
         ],
-        "durationMs": 1778,
+        "durationMs": 1968,
         "log": "logs/elaborate.log",
         "exitCode": 0,
         "outcome": "passed",
@@ -176,7 +177,7 @@
           "--json",
           "<run>/Probe.lean"
         ],
-        "durationMs": 2337,
+        "durationMs": 4900,
         "log": "logs/inspect.log",
         "exitCode": 0,
         "outcome": "passed",
@@ -191,7 +192,7 @@
           "--fresh",
           "LearnToProveIt.Basic"
         ],
-        "durationMs": 46228,
+        "durationMs": 45060,
         "log": "logs/kernel_replay.log",
         "exitCode": 0,
         "outcome": "passed",
@@ -271,7 +272,7 @@
       },
       {
         "name": "logs/inspect.log",
-        "digest": "sha256:963873895ce68ddad06880a50c1fa61ee9e0b62efd13cad2ffdcda661840ec08",
+        "digest": "sha256:96d5eb7f83c664a25099d82494247dbfbd11c7a94ca4b333606673d6862a1af3",
         "bytes": 1411
       },
       {

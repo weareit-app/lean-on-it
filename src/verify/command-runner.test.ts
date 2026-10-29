@@ -1,3 +1,4 @@
+import { execFileSync, spawn } from "node:child_process";
 import { describe, expect, it } from "vitest";
 import { allowlistedEnv, nodeCommandRunner } from "./command-runner.ts";
 
@@ -80,4 +81,45 @@ describe("nodeCommandRunner", () => {
     });
     expect(result).toMatchObject({ exitCode: null, failure: "spawn_error" });
   });
+
+  it("kills its children when the parent is interrupted", async () => {
+    // A parent that starts a long child through the runner, prints the
+    // child's pid, then waits; we interrupt the parent and check the child.
+    const script = `
+      import { nodeCommandRunner } from ${JSON.stringify(new URL("./command-runner.ts", import.meta.url).href)};
+      const run = nodeCommandRunner({ argv: [process.execPath, "-e", "console.log(process.pid); setTimeout(() => {}, 60000)"], cwd: process.cwd(), env: {}, timeoutMs: 60000, maxOutputBytes: 4096 });
+      setTimeout(() => console.log("ready"), 500);
+      await run;`;
+    const parent = spawn(node, ["--input-type=module", "-e", script], {
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    await new Promise<void>((resolve) =>
+      parent.stdout.on("data", (d: Buffer) => {
+        if (d.toString().includes("ready")) resolve();
+      }),
+    );
+    const groups = spawnSyncPgrep(parent.pid!);
+    parent.kill("SIGINT");
+    await new Promise((resolve) => parent.on("close", resolve));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    for (const pid of groups) expect(alive(pid)).toBe(false);
+    expect(groups.length).toBeGreaterThan(0);
+  });
 });
+
+function alive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Pids of `parent`'s direct children. */
+function spawnSyncPgrep(parent: number): number[] {
+  const out = execFileSync("pgrep", ["-P", String(parent)], {
+    encoding: "utf8",
+  });
+  return out.split("\n").filter(Boolean).map(Number);
+}

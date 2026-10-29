@@ -4,7 +4,7 @@
 // and symlinks cannot escape a root. A trusted workspace is not a sandbox:
 // Lean runs its code with the operator's permissions.
 import { existsSync, realpathSync, statSync } from "node:fs";
-import { isAbsolute, join, relative, sep } from "node:path";
+import { delimiter, isAbsolute, join, relative, sep } from "node:path";
 
 /** A request refused before any process starts. */
 export class AccessDenied extends Error {
@@ -24,7 +24,8 @@ function canonical(path: string, what: string): string {
   }
 }
 
-function isWithin(parent: string, child: string): boolean {
+/** Whether `child` is `parent` or lies under it; both should be canonical. */
+export function isWithin(parent: string, child: string): boolean {
   const rel = relative(parent, child);
   return (
     rel === "" ||
@@ -41,7 +42,14 @@ export function resolveTrustedWorkspace(
   if (!isAbsolute(requested))
     throw new AccessDenied(`workspace path must be absolute: ${requested}`);
   const workspace = canonical(requested, "workspace");
-  const roots = trustedRoots.map((r) => canonical(r, "trusted root"));
+  const roots = trustedRoots.map((r) => {
+    try {
+      return realpathSync(r);
+    } catch {
+      // Name no path: a caller must not learn the operator's roots.
+      throw new AccessDenied("a configured trusted root does not exist");
+    }
+  });
   if (!roots.some((r) => isWithin(r, workspace)))
     throw new AccessDenied(
       `workspace is outside the trusted roots: ${requested}`,
@@ -99,4 +107,15 @@ export function moduleSourceFile(
   if (!isWithin(workspace.root, real))
     throw new AccessDenied(`module ${module} resolves outside the workspace`);
   return { absolute: real, relative: rel };
+}
+
+/** Trusted roots from flags plus LEAN_ON_IT_TRUSTED_ROOTS, set by the operator. */
+export function operatorTrustedRoots(
+  flags: readonly string[] | undefined,
+  env: NodeJS.ProcessEnv,
+): string[] {
+  return [
+    ...(flags ?? []),
+    ...(env.LEAN_ON_IT_TRUSTED_ROOTS?.split(delimiter).filter(Boolean) ?? []),
+  ];
 }

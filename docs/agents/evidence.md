@@ -12,7 +12,7 @@ pnpm lean-on-it verify --trusted-root <root> --workspace <lake-project> \
 - The workspace must lie inside a `--trusted-root` (or a root in `LEAN_ON_IT_TRUSTED_ROOTS`, `:`-separated). Only use roots you trust: Lean runs the project's own code with your permissions.
 - Build the workspace yourself first (`lake exe cache get`, `lake build`). The run never builds or fetches; stale outputs make it `incomplete`.
 - `--out` must be outside the workspace and empty. It receives `manifest.json` and every artifact it lists (logs, the generated probe, the dependency closure), each with a sha256 digest.
-- `--kernel-replay module` replays only the module's own declarations, which is much faster than the default `fresh` and is recorded as a limitation.
+- `--kernel-replay module` replays only the module's own declarations. It is much faster than the default `fresh`, but the run is then `incomplete`, never kernel-checked: imports were not re-checked.
 - Exit code: 0 kernel-checked, 1 rejected, 2 incomplete, 64 refused before anything ran.
 
 The claim file is the manifest's `claim` record (see `schemas/evidence-manifest-1.0.0.schema.json`). Write it from the source, not from the Lean statement, and record where it came from.
@@ -37,4 +37,9 @@ Checks the schema, that the stated statuses are the ones the records support, an
 
 ## MCP
 
-Start the server with roots: `node src/main.ts --trusted-root <root>`. It speaks stdio only. `verify_declaration` returns the manifest (not the artifacts) and refuses every call when no root is configured; `validate_manifest` runs nothing.
+Start the server with roots and, optionally, your identity: `node src/main.ts --trusted-root <root> --operator <id>`. It speaks stdio only. `verify_declaration` returns the manifest and its artifacts (left out above 4 MiB; the digests stay in the manifest) and refuses every call when no root is configured; errors other than refusals are reported without detail, so host paths stay on the server. `validate_manifest` runs nothing.
+
+## Known limits
+
+- The probe's per-run nonce reaches Lean through an environment variable, so code in a trusted workspace could read it and forge a probe record. The nonce guards against stale or stray output, not against the workspace itself; that is what workspace trust is for.
+- Nothing records who formalized a declaration; a reviewer's `participatedInFormalization` is their own disclosure.

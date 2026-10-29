@@ -130,6 +130,13 @@ describe("validateManifest", () => {
         "incomplete",
       ],
       [
+        "the kernel replayed only the module, not its imports",
+        (m) => {
+          m.verification.kernelReplay = "module";
+        },
+        "incomplete",
+      ],
+      [
         "a step could not run",
         (m) => {
           m.verification.steps[0]!.outcome = "error";

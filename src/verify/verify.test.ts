@@ -81,6 +81,7 @@ describe.skipIf(!hasLake())("verifyDeclaration against real Lean", () => {
     const before = snapshot(base.workspace);
     const { manifest, artifacts } = await verifyDeclaration({
       ...base,
+      kernelReplay: "fresh",
       module: "CoreSample.Good",
       declaration: "CoreSample.add_zero'",
     });
@@ -104,11 +105,12 @@ describe.skipIf(!hasLake())("verifyDeclaration against real Lean", () => {
     });
     expect(artifacts.map((a) => a.name)).toContain("dependency-closure.json");
     expect(snapshot(base.workspace)).toEqual(before);
-  }, 120_000);
+  }, 300_000);
 
   it("accepts an allowed axiom", async () => {
     const { manifest } = await verifyDeclaration({
       ...base,
+      kernelReplay: "fresh",
       module: "CoreSample.Good",
       declaration: "CoreSample.and_self'",
     });
@@ -117,7 +119,7 @@ describe.skipIf(!hasLake())("verifyDeclaration against real Lean", () => {
       names: ["propext"],
     });
     expect(manifest.status.kernel.status).toBe("kernel_checked");
-  }, 120_000);
+  }, 300_000);
 
   it("rejects a theorem closed with sorry", async () => {
     const { manifest } = await verifyDeclaration({
@@ -162,10 +164,9 @@ describe.skipIf(!hasLake())("verifyDeclaration against real Lean", () => {
     expect(manifest.declaration.lookup.status).toBe("not_found");
   }, 120_000);
 
-  it("replays the module and its imports from fresh", async () => {
+  it("calls a module-only replay incomplete, not checked", async () => {
     const { manifest } = await verifyDeclaration({
       ...base,
-      kernelReplay: "fresh",
       module: "CoreSample.Good",
       declaration: "CoreSample.add_zero'",
     });
@@ -173,9 +174,12 @@ describe.skipIf(!hasLake())("verifyDeclaration against real Lean", () => {
       (s) => s.id === "kernel_replay",
     );
     expect(replay).toMatchObject({ outcome: "passed" });
-    expect(replay?.argv).toContain("--fresh");
-    expect(manifest.status.kernel.status).toBe("kernel_checked");
-  }, 300_000);
+    expect(replay?.argv).not.toContain("--fresh");
+    expect(manifest.status.kernel.status).toBe("incomplete");
+    expect(manifest.status.kernel.reasons.join("\n")).toMatch(
+      /not its imports/,
+    );
+  }, 120_000);
 
   it("keeps absolute host paths out of the manifest and logs", async () => {
     const { manifest, artifacts } = await verifyDeclaration({

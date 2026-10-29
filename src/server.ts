@@ -5,7 +5,11 @@ import { claimSchema } from "./evidence/manifest.ts";
 import { validateManifest } from "./evidence/validate.ts";
 import { leanLspLaunch } from "./lean-lsp.ts";
 import type { CommandRunner } from "./verify/command-runner.ts";
-import { verifyDeclaration } from "./verify/verify.ts";
+import { AccessDenied } from "./verify/trusted-workspace.ts";
+import { InvalidRequest, verifyDeclaration } from "./verify/verify.ts";
+
+/** Larger artifact sets are left out of a tool result; their digests remain. */
+const MAX_INLINE_ARTIFACT_BYTES = 4 * 1024 * 1024;
 
 export const SERVER_NAME = "lean-on-it";
 
@@ -15,11 +19,13 @@ export interface ServerOptions {
    * verify_declaration refuses every call and no Lean runs.
    */
   trustedRoots?: readonly string[];
+  /** Who runs verifications; recorded so they cannot later review fidelity. */
+  operator?: string | null;
   /** Substitutes the process runner, for tests. */
   runner?: CommandRunner;
 }
 
-const failure = (message: string) => ({
+const toolError = (message: string) => ({
   isError: true,
   content: [{ type: "text" as const, text: message }],
 });
@@ -53,7 +59,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
     {
       title: "Verify a declaration",
       description:
-        "Runs a read-only verification of one Lean declaration in a workspace inside the operator's trusted roots, and returns the evidence manifest. Records kernel evidence only: fidelity stays not reviewed until an independent review is attached. Refuses workspaces outside the trusted roots before running anything.",
+        "Runs a read-only verification of one Lean declaration in a workspace inside the operator's trusted roots, and returns the evidence manifest and its artifacts (logs, probe, dependency closure), each listed in the manifest by digest. Records kernel evidence only: fidelity stays not reviewed until an independent review is attached. Refuses workspaces outside the trusted roots before running anything.",
       inputSchema: z.strictObject({
         workspace: z.string().describe("Absolute path of the Lake project"),
         module: z.string().describe("Module declaring it, e.g. Foo.Basic"),
@@ -64,20 +70,39 @@ export function createServer(options: ServerOptions = {}): McpServer {
     },
     async (args) => {
       try {
-        const { manifest } = await verifyDeclaration({
+        const { manifest, artifacts } = await verifyDeclaration({
           trustedRoots,
           workspace: args.workspace,
           module: args.module,
           declaration: args.declaration,
           claim: args.claim,
+          operator: options.operator ?? null,
           ...(args.kernelReplay ? { kernelReplay: args.kernelReplay } : {}),
           ...(options.runner ? { runner: options.runner } : {}),
         });
+        const bytes = artifacts.reduce(
+          (n, a) => n + Buffer.byteLength(a.content),
+          0,
+        );
+        const result =
+          bytes <= MAX_INLINE_ARTIFACT_BYTES
+            ? { manifest, artifacts }
+            : {
+                manifest,
+                artifacts: null,
+                note: `artifacts (${bytes} bytes) exceed the inline limit; run the CLI to write the full bundle`,
+              };
         return {
-          content: [{ type: "text", text: JSON.stringify(manifest, null, 2) }],
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
         };
       } catch (error) {
-        return failure(error instanceof Error ? error.message : String(error));
+        // Refusals carry only what the caller sent; anything else could name
+        // host paths, so it is reported without detail.
+        return toolError(
+          error instanceof AccessDenied || error instanceof InvalidRequest
+            ? error.message
+            : "verification failed with an internal error; see the server's stderr",
+        );
       }
     },
   );
@@ -103,7 +128,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
               },
             ],
           }
-        : failure(JSON.stringify({ ok: false, errors: result.errors }));
+        : toolError(JSON.stringify({ ok: false, errors: result.errors }));
     },
   );
 

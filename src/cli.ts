@@ -6,7 +6,7 @@
 // Exit codes: 0 success (verify: kernel-checked), 1 invalid or rejected,
 // 2 incomplete evidence, 64 refused or misused.
 import { existsSync, readFileSync, realpathSync } from "node:fs";
-import { delimiter, dirname, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import {
   MANIFEST_FILE,
@@ -16,7 +16,11 @@ import {
 } from "./evidence/bundle.ts";
 import type { EvidenceManifest } from "./evidence/manifest.ts";
 import { attachFidelityReview } from "./evidence/review.ts";
-import { AccessDenied } from "./verify/trusted-workspace.ts";
+import {
+  AccessDenied,
+  isWithin,
+  operatorTrustedRoots,
+} from "./verify/trusted-workspace.ts";
 import { InvalidRequest, verifyDeclaration } from "./verify/verify.ts";
 
 const USAGE = `usage:
@@ -28,6 +32,16 @@ const USAGE = `usage:
   lean-on-it validate <bundle-dir>`;
 
 class Refused extends Error {}
+
+function readJson(path: string, what: string): unknown {
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch (error) {
+    throw new Refused(
+      `cannot read ${what} as JSON: ${error instanceof Error ? error.message : error}`,
+    );
+  }
+}
 
 function summary(manifest: EvidenceManifest): string {
   const { kernel, fidelity } = manifest.status;
@@ -73,28 +87,28 @@ async function verify(args: string[]): Promise<number> {
   const replay = values["kernel-replay"] ?? "fresh";
   if (replay !== "fresh" && replay !== "module")
     throw new Refused("--kernel-replay must be fresh or module");
-  const trustedRoots = [
-    ...(values["trusted-root"] ?? []),
-    ...(process.env.LEAN_ON_IT_TRUSTED_ROOTS?.split(delimiter).filter(
-      Boolean,
-    ) ?? []),
-  ];
+  const trustedRoots = operatorTrustedRoots(
+    values["trusted-root"],
+    process.env,
+  );
   const workspacePath = resolve(workspace);
   const outPath = canonicalTarget(out);
   if (existsSync(workspacePath)) {
     const ws = realpathSync(workspacePath);
-    if (outPath === ws || outPath.startsWith(`${ws}/`))
+    if (isWithin(ws, outPath))
       throw new Refused(
         `--out is inside the workspace; verification never writes there: ${out}`,
       );
   }
   const seconds = values["timeout-seconds"];
+  if (seconds !== undefined && !/^[1-9][0-9]*$/.test(seconds))
+    throw new Refused("--timeout-seconds must be a positive whole number");
   const bundle = await verifyDeclaration({
     trustedRoots,
     workspace: workspacePath,
     module,
     declaration,
-    claim: JSON.parse(readFileSync(claim, "utf8")),
+    claim: readJson(claim, "--claim"),
     operator: values.operator ?? null,
     kernelReplay: replay,
     ...(seconds ? { timeoutMs: Number(seconds) * 1000 } : {}),
@@ -118,7 +132,7 @@ function review(args: string[]): number {
   }
   const result = attachFidelityReview(
     bundle.manifest,
-    JSON.parse(readFileSync(reviewFile, "utf8")),
+    readJson(reviewFile, "review"),
   );
   if (!result.ok) {
     console.error(result.errors.join("\n"));
