@@ -35,11 +35,7 @@ drop_caches() { sync; echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null; }
 echo "== sandbox start-up baseline"
 for i in 1 2 3; do timed_run "lean --version #$i" lean --version; done
 
-echo "== import Mathlib, cold host page cache, fresh sandbox each"
-for i in 1 2 3; do drop_caches; timed_run "cold import #$i" sh -c "$lean_cmd"; done
-
-echo "== import Mathlib, warm host page cache, fresh sandbox each"
-for i in 1 2 3; do timed_run "warm import #$i" sh -c "$lean_cmd"; done
+# Import timings under several settings: import-matrix.sh.
 
 echo "== host cgroup during an import (sandbox kept 5 s after Lean exits)"
 drop_caches
