@@ -1,0 +1,6 @@
+$ lake --version
+exit: 0
+--- stdout
+Lake version 5.0.0-src+eb6cafb (Lean version 4.35.0)
+
+--- stderr

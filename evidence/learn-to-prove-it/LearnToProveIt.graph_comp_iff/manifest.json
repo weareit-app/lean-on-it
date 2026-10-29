@@ -1,0 +1,308 @@
+{
+  "schema": "lean-on-it/evidence-manifest",
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-10-29T00:57:01.053Z",
+  "claim": {
+    "id": "claim:learn-to-prove-it/graph-comp-iff",
+    "statement": "Composing the graph of a function f with a relation r is substitution: an element a is related to c by the composite exactly when f a is related to c by r.",
+    "assumptions": [],
+    "scope": "The source states no restriction on the function, the relation or their types.",
+    "source": {
+      "title": "learn-to-prove-it: module documentation and docstring of graph_comp_iff",
+      "locator": "LearnToProveIt/Basic.lean, module docstring and the docstring of LearnToProveIt.graph_comp_iff",
+      "version": "git:881efeb9ada315e0803c9a11c29080aaf532494b",
+      "uri": "https://github.com/weareit-app/learn-to-prove-it/blob/881efeb9ada315e0803c9a11c29080aaf532494b/LearnToProveIt/Basic.lean",
+      "digest": "sha256:55e716ae28395187c8adbff67efabe19b60c959ebabae013be563c9366fbd296"
+    },
+    "notes": [
+      "The source's own wording is \"Composing a function's graph with a relation is substitution.\"; the statement above spells out that sentence and adds nothing the source does not say.",
+      "The source documentation sits beside the Lean declaration it describes, so it is not independent of the formalization.",
+      "The source notes that Mathlib's Relation.fun_eq_comp states a form of the same fact; this is a regression fixture, not a new result."
+    ]
+  },
+  "declaration": {
+    "id": "declaration:LearnToProveIt.graph_comp_iff",
+    "name": "LearnToProveIt.graph_comp_iff",
+    "module": "LearnToProveIt.Basic",
+    "sourceFile": "LearnToProveIt/Basic.lean",
+    "sourceDigest": "sha256:55e716ae28395187c8adbff67efabe19b60c959ebabae013be563c9366fbd296",
+    "lookup": {
+      "status": "found",
+      "kind": "theorem",
+      "definedInModule": true,
+      "levelParams": [
+        "u_1",
+        "u_2",
+        "u_3"
+      ]
+    },
+    "elaboratedType": {
+      "status": "captured",
+      "pretty": "∀ {α : Type u_1} {β : Type u_2} {γ : Type u_3} (f : α → β) (r : β → γ → Prop) (a : α) (c : γ),\n  Relation.Comp (fun x y => f x = y) r a c ↔ r (f a) c",
+      "explicit": "∀ {α : Type u_1} {β : Type u_2} {γ : Type u_3} (f : α → β) (r : β → γ → Prop) (a : α) (c : γ),\n  Iff (@Relation.Comp.{u_1, u_2, u_3} α β γ (fun (x : α) (y : β) => @Eq.{u_2 + 1} β (f x) y) r a c) (r (f a) c)",
+      "digest": "sha256:721ea4b0b45a0e4a826192103d91496d4c2bbb5ff16f42bac75b18d9bae6b80d"
+    },
+    "environment": {
+      "lean": {
+        "status": "captured",
+        "version": "4.35.0",
+        "commit": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+      },
+      "lake": {
+        "status": "captured",
+        "version": "5.0.0-src+eb6cafb"
+      },
+      "toolchain": "leanprover/lean4:v4.35.0",
+      "lakeManifestDigest": "sha256:bc0da9db5fb8bdac6b22bc8f40bd027a29438314dded16351d309765a67cde68",
+      "packages": [
+        {
+          "name": "mathlib",
+          "url": "https://github.com/leanprover-community/mathlib4",
+          "rev": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+          "inputRev": "v4.35.0"
+        },
+        {
+          "name": "plausible",
+          "url": "https://github.com/leanprover-community/plausible",
+          "rev": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+          "inputRev": "main"
+        },
+        {
+          "name": "LeanSearchClient",
+          "url": "https://github.com/leanprover-community/LeanSearchClient",
+          "rev": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+          "inputRev": "main"
+        },
+        {
+          "name": "importGraph",
+          "url": "https://github.com/leanprover-community/import-graph",
+          "rev": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+          "inputRev": "main"
+        },
+        {
+          "name": "proofwidgets",
+          "url": "https://github.com/leanprover-community/ProofWidgets4",
+          "rev": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+          "inputRev": "main"
+        },
+        {
+          "name": "aesop",
+          "url": "https://github.com/leanprover-community/aesop",
+          "rev": "4a174c490d8707121c4a9290800489f105d85e07",
+          "inputRev": "master"
+        },
+        {
+          "name": "Qq",
+          "url": "https://github.com/leanprover-community/quote4",
+          "rev": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+          "inputRev": "master"
+        },
+        {
+          "name": "batteries",
+          "url": "https://github.com/leanprover-community/batteries",
+          "rev": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+          "inputRev": "main"
+        },
+        {
+          "name": "Cli",
+          "url": "https://github.com/leanprover/lean4-cli",
+          "rev": "c24fe6078c630e89b489bffe59b3e20ac30d12c8",
+          "inputRev": "v4.35.0"
+        }
+      ],
+      "workspace": {
+        "package": "learn_to_prove_it",
+        "revision": {
+          "vcs": "git",
+          "commit": "881efeb9ada315e0803c9a11c29080aaf532494b",
+          "dirty": false
+        }
+      }
+    }
+  },
+  "verification": {
+    "id": "run:2026-10-29T00:56:07.746Z:a2a16fe5",
+    "declarationId": "declaration:LearnToProveIt.graph_comp_iff",
+    "operator": null,
+    "tool": {
+      "name": "lean-on-it",
+      "version": "0.0.0"
+    },
+    "startedAt": "2026-10-29T00:56:07.746Z",
+    "finishedAt": "2026-10-29T00:57:01.053Z",
+    "axiomPolicy": {
+      "allowed": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "steps": [
+      {
+        "id": "freshness",
+        "argv": [
+          "lake",
+          "build",
+          "--no-build",
+          "LearnToProveIt.Basic"
+        ],
+        "durationMs": 1150,
+        "log": "logs/freshness.log",
+        "exitCode": 0,
+        "outcome": "passed",
+        "detail": ""
+      },
+      {
+        "id": "elaborate",
+        "argv": [
+          "lake",
+          "env",
+          "lean",
+          "--json",
+          "LearnToProveIt/Basic.lean"
+        ],
+        "durationMs": 1778,
+        "log": "logs/elaborate.log",
+        "exitCode": 0,
+        "outcome": "passed",
+        "detail": ""
+      },
+      {
+        "id": "inspect",
+        "argv": [
+          "lake",
+          "env",
+          "lean",
+          "--json",
+          "<run>/Probe.lean"
+        ],
+        "durationMs": 2337,
+        "log": "logs/inspect.log",
+        "exitCode": 0,
+        "outcome": "passed",
+        "detail": ""
+      },
+      {
+        "id": "kernel_replay",
+        "argv": [
+          "lake",
+          "env",
+          "leanchecker",
+          "--fresh",
+          "LearnToProveIt.Basic"
+        ],
+        "durationMs": 46228,
+        "log": "logs/kernel_replay.log",
+        "exitCode": 0,
+        "outcome": "passed",
+        "detail": ""
+      }
+    ],
+    "diagnostics": {
+      "status": "captured",
+      "errors": 0,
+      "warnings": 0,
+      "sorryWarnings": 0
+    },
+    "axioms": {
+      "status": "captured",
+      "names": []
+    },
+    "dependencies": {
+      "status": "captured",
+      "direct": [
+        "And",
+        "And.casesOn",
+        "And.intro",
+        "Eq",
+        "Eq.ndrec",
+        "Exists.casesOn",
+        "Exists.intro",
+        "Iff",
+        "Iff.intro",
+        "Relation.Comp",
+        "rfl"
+      ],
+      "closureSize": 16,
+      "modules": [
+        "Init.Core",
+        "Init.Prelude",
+        "LearnToProveIt.Basic",
+        "Mathlib.Logic.Relation"
+      ],
+      "closureDigest": "sha256:0afdfdd8c470cd714bd9261c847591e2a3647db3a0b928fd32cb12f8417a8a0a",
+      "artifact": "dependency-closure.json"
+    },
+    "artifacts": [
+      {
+        "name": "logs/environment-lake-version.log",
+        "digest": "sha256:c7c30d8d228c1d47a80b03e7ec0c57b6c072fc3bd16e62a2c8250fe530b651d0",
+        "bytes": 101
+      },
+      {
+        "name": "logs/environment-lean-version.log",
+        "digest": "sha256:845e0f5c21e52ca677ad1f823834a0d0caf27b4c2a66873c3f92410d8883a315",
+        "bytes": 163
+      },
+      {
+        "name": "logs/environment-git-commit.log",
+        "digest": "sha256:23c09ac89ceb4ed2c2b73bc2dadc4d55f07cd19c4768538ca627b2859d51f1f9",
+        "bytes": 93
+      },
+      {
+        "name": "logs/environment-git-status.log",
+        "digest": "sha256:3ccc706913037ebeb3aa402165d0a390ce0a9bc5e6f706d1ae5b72882d08df85",
+        "bytes": 61
+      },
+      {
+        "name": "logs/freshness.log",
+        "digest": "sha256:bba93963f4f73ba1432141b043f3db42ad75054b1c86da85da4b78a6865cafc8",
+        "bytes": 111
+      },
+      {
+        "name": "logs/elaborate.log",
+        "digest": "sha256:d0752885010368aaeb88fa784ea0c4911a33d016cc9d43ba6e68eca6f9c5476d",
+        "bytes": 80
+      },
+      {
+        "name": "probe/Probe.lean",
+        "digest": "sha256:9b5368df811da4eea652b9289c3efdbd53adb68bbbcf4b2242d07ded2eff90f4",
+        "bytes": 2489
+      },
+      {
+        "name": "logs/inspect.log",
+        "digest": "sha256:963873895ce68ddad06880a50c1fa61ee9e0b62efd13cad2ffdcda661840ec08",
+        "bytes": 1411
+      },
+      {
+        "name": "logs/kernel_replay.log",
+        "digest": "sha256:14ccb7c2168e366f41cf08e8eda21c32235d4324a8e901c9faa0aa37652e79cc",
+        "bytes": 83
+      },
+      {
+        "name": "dependency-closure.json",
+        "digest": "sha256:c0562d628406aec1332f32b8924c96bfffaca58502573ff6cb08d7280bc31255",
+        "bytes": 461
+      }
+    ],
+    "limitations": [
+      "Lean ran the workspace's own code with the operator's permissions; the run is not sandboxed.",
+      "Imported modules were loaded from the workspace's existing build outputs, not rebuilt from source.",
+      "leanchecker --fresh replayed the module and all its imports through the Lean kernel; it is the same kernel, not an external checker.",
+      "The dependency closure follows constants referenced by types and values; it omits anything used only during elaboration."
+    ]
+  },
+  "fidelityReviews": [],
+  "status": {
+    "kernel": {
+      "status": "kernel_checked",
+      "reasons": []
+    },
+    "fidelity": {
+      "status": "not_reviewed",
+      "reasons": [
+        "no fidelity review has been recorded"
+      ]
+    }
+  }
+}

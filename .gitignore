@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 *.log
+# Evidence bundles keep their run logs; manifests list them by digest.
+!evidence/**/logs/*.log

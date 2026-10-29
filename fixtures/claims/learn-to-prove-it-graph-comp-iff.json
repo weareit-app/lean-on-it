@@ -1,0 +1,18 @@
+{
+  "id": "claim:learn-to-prove-it/graph-comp-iff",
+  "statement": "Composing the graph of a function f with a relation r is substitution: an element a is related to c by the composite exactly when f a is related to c by r.",
+  "assumptions": [],
+  "scope": "The source states no restriction on the function, the relation or their types.",
+  "source": {
+    "title": "learn-to-prove-it: module documentation and docstring of graph_comp_iff",
+    "locator": "LearnToProveIt/Basic.lean, module docstring and the docstring of LearnToProveIt.graph_comp_iff",
+    "version": "git:881efeb9ada315e0803c9a11c29080aaf532494b",
+    "uri": "https://github.com/weareit-app/learn-to-prove-it/blob/881efeb9ada315e0803c9a11c29080aaf532494b/LearnToProveIt/Basic.lean",
+    "digest": "sha256:55e716ae28395187c8adbff67efabe19b60c959ebabae013be563c9366fbd296"
+  },
+  "notes": [
+    "The source's own wording is \"Composing a function's graph with a relation is substitution.\"; the statement above spells out that sentence and adds nothing the source does not say.",
+    "The source documentation sits beside the Lean declaration it describes, so it is not independent of the formalization.",
+    "The source notes that Mathlib's Relation.fun_eq_comp states a form of the same fact; this is a regression fixture, not a new result."
+  ]
+}

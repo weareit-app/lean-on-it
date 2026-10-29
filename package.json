@@ -11,6 +11,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "bin": {
+    "lean-on-it": "./src/cli.ts"
+  },
   "scripts": {
     "check": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run check:repo",
     "check:repo": "node tools/skills-sync/sync-skills.mjs --check && node tools/decision-records/check-no-adr-folder.mjs && node tools/action-pins/check-action-pins.mjs",
@@ -18,7 +21,9 @@
     "lint": "biome ci --error-on-warnings .",
     "format": "biome format --write .",
     "test": "vitest run",
-    "start": "node src/main.ts"
+    "start": "node src/main.ts",
+    "lean-on-it": "node src/cli.ts",
+    "schema:write": "node tools/schemas/write-json-schema.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",

@@ -1,0 +1,6 @@
+$ lake build --no-build LearnToProveIt.Basic
+exit: 0
+--- stdout
+All targets up-to-date (127 jobs).
+
+--- stderr

@@ -83,7 +83,7 @@ function deriveKernelStatus(
       rejected.push(`elaboration reported ${diagnostics.errors} error(s)`);
     if (diagnostics.sorryWarnings > 0)
       rejected.push(
-        `elaboration reported ${diagnostics.sorryWarnings} sorry warning(s)`,
+        `elaborating the declaring module reported ${diagnostics.sorryWarnings} sorry warning(s)`,
       );
   }
 

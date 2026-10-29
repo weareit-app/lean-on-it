@@ -27,7 +27,8 @@ A change is done when `pnpm check` passes, its tests cover the behaviour it adds
 
 - Decisions: `docs/architecture/decisions.md`. Dependencies: `docs/architecture/dependencies.md`. CI actions, downloads and their reviews: `docs/architecture/ci-actions.md`.
 - Choosing which skill or flow fits: `.claude/skills/ask-lean-on-it/SKILL.md` (`/ask-lean-on-it`; Codex: `$ask-lean-on-it`). Running skills: `docs/agents/skills.md`.
-- Domain terms and decision records: `docs/agents/domain.md`.
+- Domain terms and decision records: `docs/agents/domain.md`; the terms themselves: `GLOSSARY.md`.
+- Producing, reviewing and checking evidence manifests: `docs/agents/evidence.md`.
 - Skills: Matt Pocock's skills (MIT), vendored unmodified from `github.com/mattpocock/skills` at commit `59db609eb1e18aaf59b63284d0e52255aff0c63c`: the `engineering/` and `productivity/` catalogs, in `.claude/skills/` (Claude Code) and the same copy in `.agents/skills/` (Codex). `LICENSE` in each folder is the upstream MIT notice. `ask-lean-on-it` is this repository's own skill.
 
 ## Agent skills

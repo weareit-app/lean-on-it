@@ -1,0 +1,27 @@
+{
+  "declaration": "LearnToProveIt.graph_comp_iff",
+  "constants": [
+    "And",
+    "And.casesOn",
+    "And.intro",
+    "Eq",
+    "Eq.ndrec",
+    "Eq.rec",
+    "Eq.refl",
+    "Exists",
+    "Exists.casesOn",
+    "Exists.intro",
+    "Exists.rec",
+    "Iff",
+    "Iff.intro",
+    "LearnToProveIt.graph_comp_iff",
+    "Relation.Comp",
+    "rfl"
+  ],
+  "modules": [
+    "Init.Core",
+    "Init.Prelude",
+    "LearnToProveIt.Basic",
+    "Mathlib.Logic.Relation"
+  ]
+}
