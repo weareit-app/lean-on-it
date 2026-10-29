@@ -1,0 +1,174 @@
+{
+ "01-honest": {
+  "expected": "accepted",
+  "description": "honest tactic proof"
+ },
+ "02-honest-helper": {
+  "expected": "accepted",
+  "description": "honest proof via a helper lemma"
+ },
+ "03-honest-inductive": {
+  "expected": "accepted",
+  "description": "honest proof with a new inductive"
+ },
+ "04-honest-new-only": {
+  "expected": "accepted",
+  "description": "honest export with every trusted-named constant removed"
+ },
+ "10-redef-dependency": {
+  "expected": "a",
+  "description": "export brings its own Relation.Comp"
+ },
+ "11-redef-obligation": {
+  "expected": "a",
+  "description": "export redefines the obligation"
+ },
+ "12-collide-trusted": {
+  "expected": "a",
+  "description": "helper renamed to the trusted Relation.fun_eq_comp"
+ },
+ "13-collide-trusted-private": {
+  "expected": "a",
+  "description": "helper renamed to a trusted private name"
+ },
+ "20-outside-namespace": {
+  "expected": "b",
+  "description": "helper lemma outside the reserved namespace"
+ },
+ "21-collide-private-user": {
+  "expected": "b",
+  "description": "new private name whose user name is a trusted name"
+ },
+ "22-reserved-root": {
+  "expected": "b",
+  "description": "helper renamed to the reserved namespace itself"
+ },
+ "30-weaker-universe": {
+  "expected": "c",
+  "description": "obligation at universes 0 only"
+ },
+ "31-weaker-statement": {
+  "expected": "c",
+  "description": "one direction of the iff"
+ },
+ "40-declared-axiom": {
+  "expected": "d",
+  "description": "proof via an axiom in the export"
+ },
+ "41-sorry": {
+  "expected": "d",
+  "description": "proof via sorryAx"
+ },
+ "42-native-decide": {
+  "expected": "d",
+  "description": "native_decide (aux axiom in Lean 4.35.0)"
+ },
+ "43-ofReduceBool": {
+  "expected": "b,d",
+  "description": "native_decide's axiom renamed to Lean.ofReduceBool"
+ },
+ "44-axiom-named-propext": {
+  "expected": "a",
+  "description": "declared axiom renamed to the permitted propext"
+ },
+ "50-kernel-value-is-type": {
+  "expected": "e",
+  "description": "theorem value replaced by its own type"
+ },
+ "51-kernel-universe-arity": {
+  "expected": "e",
+  "description": "reference to helper with one universe too few"
+ },
+ "52-ctor-claims-trusted": {
+  "expected": "s",
+  "description": "new constructor's induct field points at Iff"
+ },
+ "53-too-many-new": {
+  "expected": "s",
+  "description": "300 extra new declarations, over the 256 limit"
+ },
+ "60-truncated-mid-line": {
+  "expected": "decoder",
+  "description": "first half of the honest export's bytes"
+ },
+ "61-truncated-line-boundary": {
+  "expected": "decoder",
+  "description": "honest export without its last line"
+ },
+ "62-empty": {
+  "expected": "decoder",
+  "description": "empty file"
+ },
+ "63-header-missing": {
+  "expected": "decoder",
+  "description": "no metadata line"
+ },
+ "64-wrong-format-version": {
+  "expected": "decoder",
+  "description": "format 3.0.0"
+ },
+ "65-wrong-lean-version": {
+  "expected": "decoder",
+  "description": "Lean 4.34.0 in the header"
+ },
+ "66-invalid-json": {
+  "expected": "decoder",
+  "description": "a broken JSON line"
+ },
+ "67-unknown-object": {
+  "expected": "decoder",
+  "description": "an unknown object kind"
+ },
+ "68-undefined-index": {
+  "expected": "decoder",
+  "description": "theorem value refers to an undefined expression"
+ },
+ "69-duplicate-index": {
+  "expected": "decoder",
+  "description": "an expression index bound twice"
+ },
+ "70-duplicate-declaration": {
+  "expected": "decoder",
+  "description": "the theorem declared twice"
+ },
+ "71-wrong-field-type": {
+  "expected": "decoder",
+  "description": "a string where an index is expected"
+ },
+ "72-non-utf8": {
+  "expected": "decoder",
+  "description": "invalid UTF-8 bytes"
+ },
+ "73-nested-json": {
+  "expected": "decoder",
+  "description": "one line nested 100000 deep"
+ },
+ "73b-nested-json-short": {
+  "expected": "decoder",
+  "description": "one line nested 30000 deep, within the line limit"
+ },
+ "74-long-line": {
+  "expected": "decoder",
+  "description": "one 70 KB line"
+ },
+ "75-oversized": {
+  "expected": "decoder",
+  "description": "9 MiB export, over the 8 MiB limit"
+ },
+ "76-expr-depth-bomb": {
+  "expected": "decoder",
+  "description": "expression chain 5000 deep"
+ },
+ "77-level-depth-bomb": {
+  "expected": "decoder",
+  "description": "universe level chain 300 deep"
+ },
+ "78-name-depth-bomb": {
+  "expected": "decoder",
+  "description": "name chain 200 deep"
+ },
+ "79-dag-blowup": {
+  "expected": "e",
+  "description": "4000-deep shared DAG as the theorem's value, within every limit"
+ }
+}

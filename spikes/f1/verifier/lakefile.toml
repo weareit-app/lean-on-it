@@ -1,0 +1,9 @@
+# F1 spike, NON-PRODUCTION. The trusted verifier executable. No dependencies beyond the
+# toolchain (it loads Mathlib's oleans at run time, from LEAN_PATH).
+name = "f1verify"
+defaultTargets = ["f1verify"]
+
+[[lean_exe]]
+name = "f1verify"
+defaultTargets = ["f1verify"]
+root = "F1Verify"

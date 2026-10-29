@@ -1,0 +1,21 @@
+ProductName:		macOS
+ProductVersion:		27.0.1
+BuildVersion:		26A434
+Darwin 27.0.0 arm64
+Apple M4 Pro
+mem 48 GiB, ncpu 14
+Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+Python 3.13.16
+d1d9c26a539f54fe839d2aa7760bf1ac1dd76a30b26e2c9684bebf2900038fcf  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean
+01327b83d6a69dbc84fa04fd671c61068b2f074e51d1bf607bf6a6b9aed5339e  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/bin/leanexport
+d70e645ea2b0e597d0ff4cf67aa0c268483fac0b5b2b991ca2d4cd7fb78ab73c  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/bin/leanchecker
+ff46b43893ad39bc8d8b71e2b028b1d7c7065ac11efbeea368d1641419f9460e  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/src/lean/LeanExport/Parse.lean
+2e839d4ac1ef1992cfe09c489a97928ad8f8eaea3925bc76b511c6bf85e1b8aa  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/src/lean/LeanExport/Basic.lean
+251ed00e1cedd95c5d1fc4104ac191beb1de618abbc2fc49319ff0e37d139329  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/src/lean/Lean/Replay.lean
+4a406b8ed95da0377206600b7b00a03bedc05102c0fadad641ffe0bfdb95122f  /Users/joshsmith/.elan/toolchains/leanprover--lean4---v4.35.0/src/lean/LeanChecker.lean
+32927e1213aedc7b3c5aa2b0bd5acc19e3ca5dac56dfacf62854ab35bcda9a05  verifier/.lake/build/bin/f1verify
+3f745a31dc5763dff042a377423eff4bf4fec9f3dc2d2835734225fefd80b6b6  verifier/F1Verify.lean
+4c7af69e3efe862f3d29bfacc6248f177cb8858b0823c04f22d2b2a172523677  lean/F1Trusted.lean
+mathlib 56a005855ea17e0b0958f73ec801ae140b0a1679 v4.35.0
+learn-to-prove-it checkout 881efeb9ada315e0803c9a11c29080aaf532494b (main), PR5 branch 75590c0c628162727fb3d60632e46a4cd4de5706
+488e27d1c978f555e7a964c71165cdea3a303e1b557901cbacecc24fe82b5b2b  /Users/joshsmith/Research/weareit-app/learn-to-prove-it/.lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Logic/Relation.olean

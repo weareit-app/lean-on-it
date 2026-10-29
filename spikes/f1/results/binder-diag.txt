@@ -1,0 +1,12 @@
+Nat.add: equal=false eqv=false eqvAfterStrippingMData=true
+  trusted  [a._@._internal._hyg.0:Lean.BinderInfo.default, a._@._internal._hyg.0:Lean.BinderInfo.default]
+  exported [a._@._internal._hyg.0:Lean.BinderInfo.default, n:Lean.BinderInfo.default]
+Not: equal=false eqv=true eqvAfterStrippingMData=true
+  trusted  [a:Lean.BinderInfo.default]
+  exported [b:Lean.BinderInfo.default]
+Nat.beq: equal=false eqv=false eqvAfterStrippingMData=true
+  trusted  [a._@._internal._hyg.0:Lean.BinderInfo.default, a._@._internal._hyg.0:Lean.BinderInfo.default]
+  exported [a._@._internal._hyg.0:Lean.BinderInfo.default, x._@.Init.Prelude.2408276648._hygCtx._hyg.14:Lean.BinderInfo.default]
+Nat.eq_of_beq_eq_true: equal=false eqv=true eqvAfterStrippingMData=true
+  trusted  [n:Lean.BinderInfo.implicit, m:Lean.BinderInfo.implicit, a._@._internal._hyg.0:Lean.BinderInfo.default]
+  exported [n:Lean.BinderInfo.implicit, x._@.Init.Prelude.4204574704._hygCtx._hyg.17:Lean.BinderInfo.default, x._@.Init.Prelude.4204574704._hygCtx._hyg.18:Lean.BinderInfo.default]

@@ -1,0 +1,20 @@
+{"checks": 5, "decode": 17, "import": 332, "kernel": 36, "total": 390}
+           716324864  maximum resident set size
+{"checks": 5, "decode": 17, "import": 351, "kernel": 36, "total": 409}
+           719208448  maximum resident set size
+{"checks": 3, "decode": 17, "import": 354, "kernel": 37, "total": 411}
+           719044608  maximum resident set size
+{"checks": 4, "decode": 16, "import": 324, "kernel": 41, "total": 385}
+           718995456  maximum resident set size
+{"checks": 4, "decode": 16, "import": 348, "kernel": 36, "total": 404}
+           719060992  maximum resident set size
+{"checks": 6, "decode": 15, "import": 330, "kernel": 39, "total": 390}
+           719044608  maximum resident set size
+{"checks": 5, "decode": 17, "import": 353, "kernel": 37, "total": 412}
+           716357632  maximum resident set size
+{"checks": 5, "decode": 16, "import": 377, "kernel": 38, "total": 436}
+           716357632  maximum resident set size
+{"checks": 4, "decode": 16, "import": 351, "kernel": 38, "total": 409}
+           716390400  maximum resident set size
+{"checks": 4, "decode": 16, "import": 347, "kernel": 38, "total": 405}
+           719093760  maximum resident set size

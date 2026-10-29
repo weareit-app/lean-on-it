@@ -1,0 +1,43 @@
+01-honest 06e4a536e8aa1cbd 28225 19 18 1 27 {'checks': 5, 'decode': 16, 'import': 388, 'kernel': 37, 'total': 446}
+02-honest-helper 0e5cbd8bed40f7b7 38068 21 18 3 32 {'checks': 6, 'decode': 17, 'import': 451, 'kernel': 48, 'total': 522}
+03-honest-inductive a8af5236ef2b459a 45667 24 18 6 32 {'checks': 6, 'decode': 18, 'import': 327, 'kernel': 40, 'total': 391}
+04-honest-new-only e722bc0432991380 25606 1 0 1 27 {'checks': 4, 'decode': 18, 'import': 384, 'kernel': 45, 'total': 451}
+10-redef-dependency 500373dc2e150526 15135 10 9 1 21 {'checks': 41, 'decode': 16, 'import': 346, 'kernel': 0, 'total': 403}
+11-redef-obligation 1822bd8052c1e404 4826 9 8 1 5 {'checks': 41, 'decode': 15, 'import': 351, 'kernel': 0, 'total': 407}
+12-collide-trusted eda2134b5f324dd3 38073 21 19 2 32 {'checks': 43, 'decode': 17, 'import': 349, 'kernel': 0, 'total': 409}
+13-collide-trusted-private 732cad535fb62dd8 38324 21 19 2 32 {'checks': 42, 'decode': 19, 'import': 354, 'kernel': 0, 'total': 415}
+20-outside-namespace 62863d719bfc7d3b 38139 21 18 3 32 {'checks': 42, 'decode': 19, 'import': 356, 'kernel': 0, 'total': 417}
+21-collide-private-user edb76346f6b55425 38287 21 18 3 32 {'checks': 45, 'decode': 20, 'import': 376, 'kernel': 0, 'total': 441}
+22-reserved-root c6bdf3f8beff6b8c 38072 21 18 3 32 {'checks': 43, 'decode': 17, 'import': 383, 'kernel': 0, 'total': 443}
+30-weaker-universe c7d102c894e7af8d 36628 20 18 2 32 {'checks': 37, 'decode': 15, 'import': 339, 'kernel': 0, 'total': 391}
+31-weaker-statement 2a26dca0eb578cf6 16473 12 11 1 22 {'checks': 41, 'decode': 16, 'import': 364, 'kernel': 0, 'total': 421}
+40-declared-axiom 5917463788ee0f64 17297 16 14 2 19 {'checks': 39, 'decode': 16, 'import': 353, 'kernel': 0, 'total': 408}
+41-sorry 750b24979ab6de79 609607 392 391 1 51 {'checks': 48, 'decode': 56, 'import': 352, 'kernel': 0, 'total': 456}
+42-native-decide b22198335ee3cb3a 153722 99 96 3 32 {'checks': 44, 'decode': 26, 'import': 333, 'kernel': 0, 'total': 403}
+43-ofReduceBool 40da7cf9e4d39d05 153768 99 96 3 32 {'checks': 44, 'decode': 24, 'import': 323, 'kernel': 0, 'total': 391}
+44-axiom-named-propext 4bd7f04972f93da0 17298 16 15 1 19 {'checks': 45, 'decode': 16, 'import': 342, 'kernel': 0, 'total': 403}
+50-kernel-value-is-type c91ec8bd3cc93dee 28225 19 18 1 27 {'checks': 5, 'decode': 17, 'import': 382, 'kernel': 44, 'total': 448}
+51-kernel-universe-arity 36b215e34c1ac37d 38066 21 18 3 32 {'checks': 6, 'decode': 21, 'import': 336, 'kernel': 35, 'total': 398}
+52-ctor-claims-trusted 79368ac7f0a2643d 45666 24 18 6 32 {'checks': 39, 'decode': 17, 'import': 339, 'kernel': 0, 'total': 395}
+53-too-many-new 498e0b4bbb656345 78248 319 18 301 27 {'checks': 44, 'decode': 18, 'import': 339, 'kernel': 0, 'total': 401}
+60-truncated-mid-line 68d02506a7a773d8 None None None 0 None None
+61-truncated-line-boundary 4431d77293e7ff45 None None None 0 None None
+62-empty e3b0c44298fc1c14 None None None 0 None None
+63-header-missing 64d6b33761c93a1a None None None 0 None None
+64-wrong-format-version 83c47304504fe42d None None None 0 None None
+65-wrong-lean-version afc04fbffa846639 None None None 0 None None
+66-invalid-json 60eae9e12416076d None None None 0 None None
+67-unknown-object 0cf6ad01a12c0a6a None None None 0 None None
+68-undefined-index 41831ff285f373a4 None None None 0 None None
+69-duplicate-index 1a4371b2f2074929 None None None 0 None None
+70-duplicate-declaration ad2140e713231b17 None None None 0 None None
+71-wrong-field-type 02bb570aae7a7b08 None None None 0 None None
+72-non-utf8 30f02ec345abf2cc None None None 0 None None
+73-nested-json bc05c26117a62038 None None None 0 None None
+73b-nested-json-short fb213610f3c1ea2d None None None 0 None None
+74-long-line 35b2a71ba0f74a64 None None None 0 None None
+75-oversized 42aa90f92e2cae63 None None None 0 None None
+76-expr-depth-bomb e1be0b849024ed52 None None None 0 None None
+77-level-depth-bomb 348395734c379620 None None None 0 None None
+78-name-depth-bomb cbf4ce6a0aca7c02 None None None 0 None None
+79-dag-blowup b538ee74683e3521 214448 19 18 1 4000 {'checks': 3, 'decode': 29, 'import': 327, 'kernel': 60, 'total': 419}

@@ -1,0 +1,3 @@
+# F1 spike: generated outputs. The recorded results are copied into results/.
+build/
+verifier/.lake/
