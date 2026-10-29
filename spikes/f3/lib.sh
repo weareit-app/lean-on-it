@@ -1,10 +1,17 @@
 # Spike F3 (non-production). Shared host-side settings and helpers, sourced by
 # the other scripts. Everything here runs on the trusted runner host.
 
-BASE_IMAGE=ubuntu:24.04@sha256:78d4744ead1f5b19b04d0df558ab182a5300903900755e515b2ca4d10eb2044d
+# ubuntu:noble-20260917, pushed 2026-10-04 (index digest; amd64 manifest
+# sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b).
+BASE_IMAGE=ubuntu:noble-20260917@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+LEAN_IMAGE=f3-lean:spike
+# runsc state directory under Docker.
+RUNSC_ROOT=/var/run/docker/runtime-runc/moby
 
 # The sandbox policy under test.
-MEM_LIMIT=2g          # memory.max, swap disabled (memory-swap = memory)
+# memory.max, swap disabled (memory-swap = memory). Sized for import Mathlib:
+# F1 measured 981 MB of .olean files and ~0.7 GB resident when warm.
+MEM_LIMIT=4g
 PIDS_LIMIT=64         # pids.max
 CPUS=1                # cpu.max quota/period
 TMPFS_SIZE=64m        # the only writable path, /tmp

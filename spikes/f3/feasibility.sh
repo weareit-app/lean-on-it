@@ -22,9 +22,7 @@ sleep 2
 host_readback "$id"
 
 echo "-- runsc state (host, runsc's own root)"
-for root in /run/docker/runtime-runc/moby /var/run/docker/runtime-runc/moby /run/containerd/runsc/moby; do
-  [ -d "$root" ] && sudo /usr/local/bin/runsc --root "$root" list 2>&1 | head -5 && echo "(root $root)"
-done
+sudo /usr/local/bin/runsc --root "$RUNSC_ROOT" list
 echo "-- host processes named runsc"
 ps -eo pid,user,comm,args | grep -E 'runsc' | grep -v grep | cut -c1-200 || true
 
