@@ -1,0 +1,22 @@
+ProductName:		macOS ProductVersion:		27.0.1 BuildVersion:		26A434 
+Darwin 27.0.0 arm64
+Apple M4 Pro
+Lean (version 4.35.0, arm64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+Python 3.13.16
+learn-to-prove-it PR #5 commit 75590c0c628162727fb3d60632e46a4cd4de5706
+adcf55a4dcd19512ca53237d88d20ca69784ff42ec8a2c928f932bfa75924675  ltp:LearnToProveIt/Checker.lean
+c5fb4e0a361d5f348ef0c0e0acff54ec304e73c7ed3773f2d849cb62e6b1765b  ltp:LearnToProveIt/GraphComp/Comprehension.lean
+b81758ccb987b3acce7e076421f1e66fbd484c0bfd1eeb965fbc7b11bcc299bc  ltp:LearnToProveIt/GraphComp/Reasoning.lean
+950bea0b49283a9b797023b312808e55e8e82a6cd3b28ab3570923d762da7646  ltp:LearnToProveIt/GraphComp/Transfer.lean
+6adb072a060583b0cb60f2f1e72fa344b84c391f0a305fb9f0317492e2e4ef4a  ltp:LearnToProveItTest/Adversarial.lean
+3652b1efd8df9457a4d26ccddbe7d4ceb6210eaea99849d716e3abb1423e7645  ltp:docs/exercises/graph-comp.md
+41c4bb45b9387ed70aa2ee0bc74c0b0a14c3a585c5a06269e8fcd62aa7a56fed  lean/F2/CheckerL2.lean
+ecf81913b32a87f3b7c107ac1d97c292ade450ba3fc4a434b86afa13eb7e5f2c  lean/F2/NewOnlyExport.lean
+3bc7fbab7ea41b1199930f98b297f5b7bee958d2350136a4e9a7930465897360  lean/F2/Sha256.lean
+6c4e39662903167dfeff5282f0d89bfb2d2a84e027be46fe789969acd7441530  lean/F2Phase1.lean
+36a96ad91e8f577433073758cda9ae86229e65d02b61b8f647aff04044ba57db  lean/F2Verify.lean
+ea401a3213525515dd395bc467b71eac218aa0e951f68a2c59c96eadcb76fabc  checker-l2.diff
+d590a3df7d01f48b0152b792c7e74e36d55a28e9884260dada1007d1cd4bbbe8  verifier-f2.diff
+60b2ffe633633a7faa3de3cb25cad09edead9d141b6facdcb96b400e50806942  .lake/build/bin/f2phase1
+7d0850f33d93b3b136ad27bee75fd8859acf1077a015ef3f0773cbf644a609ae  .lake/build/bin/f2verify
+F1 verifier source at 76c99bb: 3f745a31dc5763dff042a377423eff4bf4fec9f3dc2d2835734225fefd80b6b6

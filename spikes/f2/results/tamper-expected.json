@@ -1,0 +1,132 @@
+{
+ "t00-untouched": {
+  "expect": "accepted",
+  "description": "h03's export as phase 1 wrote it",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t01-no-trailer": {
+  "expect": "infrastructure_failure",
+  "description": "trailer line removed",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t02-line-removed": {
+  "expect": "infrastructure_failure",
+  "description": "one body line removed, trailer kept",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t03-byte-altered": {
+  "expect": "infrastructure_failure",
+  "description": "one binder annotation changed, trailer kept",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t04-truncated-mid-line": {
+  "expect": "infrastructure_failure",
+  "description": "first half of the bytes",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t05-theorem-line-removed": {
+  "expect": "infrastructure_failure",
+  "description": "the theorem's line removed, trailer kept",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t06-altered-trailer-recomputed": {
+  "expect": "policy_violation:e",
+  "description": "theorem value replaced by its type, trailer recomputed (a compromised phase 1)",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t07-duplicate-trailer": {
+  "expect": "infrastructure_failure",
+  "description": "trailer twice",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t08-malformed-trailer": {
+  "expect": "infrastructure_failure",
+  "description": "trailer digest is a number",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t09-blank-after-trailer": {
+  "expect": "infrastructure_failure",
+  "description": "an empty line after the trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "t10-line-after-trailer": {
+  "expect": "infrastructure_failure",
+  "description": "a body line after the trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "x01-closure-export": {
+  "expect": "policy_violation:a",
+  "description": "stock leanexport closure export of an honest proof, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d63-header-missing": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 63-header-missing, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d64-wrong-format-version": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 64-wrong-format-version, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d65-wrong-lean-version": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 65-wrong-lean-version, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d66-invalid-json": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 66-invalid-json, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d67-unknown-object": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 67-unknown-object, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d68-undefined-index": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 68-undefined-index, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d69-duplicate-index": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 69-duplicate-index, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d70-duplicate-declaration": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 70-duplicate-declaration, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d71-wrong-field-type": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 71-wrong-field-type, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d73b-nested-json-short": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 73b-nested-json-short, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d74-long-line": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 74-long-line, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d76-expr-depth-bomb": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 76-expr-depth-bomb, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d77-level-depth-bomb": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 77-level-depth-bomb, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ },
+ "d78-name-depth-bomb": {
+  "expect": "infrastructure_failure",
+  "description": "F1 case 78-name-depth-bomb, with a valid trailer",
+  "exercise": "graph-comp.reasoning"
+ }
+}

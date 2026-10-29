@@ -1,0 +1,49 @@
+--- build/ltp/LearnToProveIt/Checker.lean	2026-10-28 21:19:44
++++ lean/F2/CheckerL2.lean	2026-10-28 22:55:33
+@@ -1,3 +1,16 @@
++/-
++F2 spike, NON-PRODUCTION. LABELLED LOCAL ADAPTATION of learn-to-prove-it's checker, standing in
++for upstream change L2 until it lands.
++
++Original: weareit-app/learn-to-prove-it PR #5, commit 75590c0c628162727fb3d60632e46a4cd4de5706,
++`LearnToProveIt/Checker.lean`, sha256
++adcf55a4dcd19512ca53237d88d20ca69784ff42ec8a2c928f932bfa75924675.
++
++Every difference from the original is marked `-- F2 L2 adaptation` and listed in
++`spikes/f2/checker-l2.diff` and in `docs/research/f2-new-only-export.md`. The checking rules are
++unchanged: the only additions let a caller fix the theorem's name and receive the declarations
++the checker has already kernel-checked.
++-/
+ module
+ 
+ public meta import Lean.Elab.Term
+@@ -184,7 +197,11 @@
+ message log, trace state, info trees and snapshot tasks as it found them. Running out of heartbeats or
+ recursion depth is a rejection; an interrupt still propagates. -/
+ public meta def checkSubmission (obligation : Name) (submission : String)
+-    (watched : Array Name := #[]) : CoreM Verdict := do
++    (watched : Array Name := #[])
++    -- F2 L2 adaptation: the theorem's name, fixed by the caller (the reserved name).
++    (theoremName? : Option Name := none)
++    -- F2 L2 adaptation: receives the kernel-checked declarations of an accepted proof.
++    (onAccepted : Array Declaration → CoreM Unit := fun _ => pure ()) : CoreM Verdict := do
+   let base ← getEnv
+   let some (.defnInfo info) := base.find? obligation
+     | return .rejected (.unknownObligation obligation)
+@@ -226,7 +243,7 @@
+       if value.hasSorry || value.hasMVar then return .rejected .incomplete
+       let added := addedSince base (← getEnv)
+       -- Fresh in the elaborated environment, which includes the caller's.
+-      let name := freshSubmissionName (← getEnv)
++      let name := theoremName?.getD (freshSubmissionName (← getEnv)) -- F2 L2 adaptation
+       let mut decls := #[]
+       for info in added do
+         let some d := declarationOf? info
+@@ -249,6 +266,7 @@
+       let axioms ← collectAxioms name
+       let disallowed := axioms.filter (!allowedAxioms.contains ·)
+       if !disallowed.isEmpty then return .rejected (.disallowedAxioms disallowed)
++      onAccepted decls -- F2 L2 adaptation
+       let (used, complete) ← dependencies name
+       return .accepted axioms (watched.filter used.contains) complete
+   finally

@@ -1,0 +1,137 @@
+{
+ "h01-comprehension-tactic": {
+  "exercise": "graph-comp.comprehension",
+  "expect": "accepted",
+  "description": "honest, tactic proof"
+ },
+ "h02-comprehension-omega": {
+  "exercise": "graph-comp.comprehension",
+  "expect": "accepted",
+  "description": "honest, change and omega"
+ },
+ "h03-reasoning-match": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "honest, term mode with match (auxiliary matchers)"
+ },
+ "h04-reasoning-simp": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "honest, simp (axioms propext, Quot.sound)"
+ },
+ "h05-reasoning-rintro": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "honest, rintro"
+ },
+ "h06-reasoning-cites": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "honest, cites trusted graph_comp_iff"
+ },
+ "h07-transfer-supplied-fact": {
+  "exercise": "graph-comp.transfer",
+  "expect": "accepted",
+  "description": "honest, uses the supplied fact graph_comp_iff"
+ },
+ "h08-transfer-direct": {
+  "exercise": "graph-comp.transfer",
+  "expect": "accepted",
+  "description": "honest, without the supplied fact"
+ },
+ "h10-reasoning-doc": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "the valid solution in docs/exercises/graph-comp.md"
+ },
+ "h11-transfer-doc": {
+  "exercise": "graph-comp.transfer",
+  "expect": "accepted",
+  "description": "the valid solution in docs/exercises/graph-comp.md"
+ },
+ "h09-runs-once": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "honest, with a metaprogram that reports each run on stderr"
+ },
+ "a01-skip-kernel-tc": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "debug.skipKernelTC with a false decide +kernel lemma"
+ },
+ "a02-upstream-reserved-name": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "policy_violation:b",
+  "description": "declares upstream's _learnToProveIt_submission through a metaprogram, then proves honestly"
+ },
+ "a03-reserved-theorem-name": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "declares LeanOnIt.Submission.proof itself through a metaprogram"
+ },
+ "a04-unused-axiom": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "policy_violation:d",
+  "description": "a metaprogram adds an axiom the proof does not use"
+ },
+ "a05-used-axiom": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "a metaprogram adds an axiom and the proof uses it"
+ },
+ "a06-let-rec": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "let rec"
+ },
+ "a07-recursion-limit": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "recursion-depth attack (maxRecDepth 40, 200 nested id)"
+ },
+ "a08-caught-limit": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "a resource limit a tactic catches and logs"
+ },
+ "a09-native-decide": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "native_decide"
+ },
+ "a10-sorry": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "sorry"
+ },
+ "a11-wrong-exercise": {
+  "exercise": "graph-comp.comprehension",
+  "expect": "rejected",
+  "description": "a reasoning proof submitted to comprehension"
+ },
+ "a12-stray-decl-in-namespace": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "a metaprogram adds a harmless theorem inside the reserved namespace"
+ },
+ "f01-forged-exit": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "infrastructure_failure",
+  "description": "prints a forged accepted verdict and exits 0 before the checker finishes"
+ },
+ "f02-forged-then-honest": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "accepted",
+  "description": "prints a forged accepted verdict, then proves honestly: the same outcome as without it"
+ },
+ "f03-forged-then-wrong": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "rejected",
+  "description": "prints a forged accepted verdict, then gives no proof"
+ },
+ "f04-forged-export": {
+  "exercise": "graph-comp.reasoning",
+  "expect": "policy_violation:c",
+  "description": "prints a forged verdict, writes a forged export (a valid comprehension proof) and exits 0"
+ }
+}

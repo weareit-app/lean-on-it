@@ -1,0 +1,150 @@
+--- build/F1Verify.orig.lean	2026-10-28 22:58:41
++++ lean/F2Verify.lean	2026-10-28 22:58:55
+@@ -1,6 +1,20 @@
+ /-
+-F1 spike, NON-PRODUCTION. A minimal trusted verifier for an untrusted Lean export.
++F2 spike, NON-PRODUCTION. COPY of the F1 verifier (`spikes/f1/verifier/F1Verify.lean` on branch
++`spike/f1-trusted-replay`, commit 76c99bb015b8204c021464e3eb3fad19b7d6d669, sha256
++3f745a31dc5763dff042a377423eff4bf4fec9f3dc2d2835734225fefd80b6b6), adapted for F2. Every change is
++marked `-- F2:` and listed in `spikes/f2/verifier-f2.diff`:
+ 
++- the trailer is checked before anything is parsed (line count and SHA-256 of every byte before
++  it), and stripped before the toolchain parser runs;
++- check (a) is the owner's stricter rule of 2026-10-28: the export contains no trusted-named
++  constant at all;
++- the trusted environment is learn-to-prove-it's three graph-comp modules, and the obligation is
++  chosen by a pinned exercise id;
++- results use the owner's categories: `accepted` (authority `verified`), `policy_violation` and
++  `infrastructure_failure` (authority `verifier`).
++
++The F1 description follows, with (a) as amended above.
++
+ It loads the pinned trusted environment, decodes an export (format 3.1.0) with the toolchain's
+ `LeanExport` parser under size and structure limits, and decides from the trusted environment
+ plus the export's *new* declarations only:
+@@ -22,16 +36,19 @@
+ -/
+ import Lean
+ import LeanExport.Parse
++import F2.Sha256
+ 
+ open Lean
+ 
+-namespace F1
++namespace F2V
+ 
+ /-- Trusted configuration. In #9's design this comes from the pinned exercise fixture,
+ never from the export or the client. -/
+ structure Config where
+-  envModules : Array Name := #[`F1Trusted]
+-  obligation : Name := `LearnToProveIt.GraphComp.Reasoning.obligation
++  -- F2: learn-to-prove-it's graph-comp modules; the obligation is set from the exercise id.
++  envModules : Array Name := #[`LearnToProveIt.GraphComp.Comprehension,
++    `LearnToProveIt.GraphComp.Reasoning, `LearnToProveIt.GraphComp.Transfer]
++  obligation : Name := .anonymous
+   theoremName : Name := `LeanOnIt.Submission.proof
+   reservedNs : Name := `LeanOnIt.Submission
+   permittedAxioms : List Name := [``propext, ``Classical.choice, ``Quot.sound]
+@@ -133,7 +150,24 @@
+   let some text := String.fromUTF8? bytes | decodeError "export is not valid UTF-8"
+   if text.isEmpty then decodeError "export is empty"
+   if !text.endsWith "\n" then decodeError "export is truncated: no final newline"
+-  let lines := (text.splitOn "\n").dropLast
++  -- F2: the trailer, checked before any other line is parsed. It counts and digests every byte
++  -- before it, so truncation or alteration anywhere is detected.
++  let allLines := (text.splitOn "\n").dropLast
++  let some last := allLines.getLast? | decodeError "export is empty"
++  if last.utf8ByteSize > cfg.maxLineBytes || jsonNesting last > cfg.maxJsonNesting then
++    decodeError "export has no trailer: the last line is over the line limits"
++  let trailer ← match Json.parse last with
++    | .ok j => pure (j.getObjValD "trailer")
++    | .error _ => decodeError "export has no trailer: the last line is not JSON (truncated?)"
++  let (.ok (n : Nat), .ok (digest : String)) :=
++      (trailer.getObjValAs? Nat "lines", trailer.getObjValAs? String "sha256")
++    | decodeError "export has no trailer, or its trailer is malformed (truncated?)"
++  let bodyBytes := bytes.extract 0 (bytes.size - last.utf8ByteSize - 1)
++  let lines := allLines.dropLast
++  if n != lines.length then
++    decodeError s!"trailer gives {n} lines, the export has {lines.length}"
++  if F2.Sha256.hex bodyBytes != digest then
++    decodeError "trailer digest does not match the export's bytes"
+   if lines.length > cfg.maxLines then
+     decodeError s!"export has {lines.length} lines, over the {cfg.maxLines}-line limit"
+   let mut st : DecodeStats := { bytes := bytes.size, lines := lines.length }
+@@ -177,7 +211,7 @@
+         if d > cfg.maxNameDepth then
+           decodeError s!"line {lineNo}: name depth over {cfg.maxNameDepth}"
+   if first then decodeError "export has no header line"
+-  let buf ← IO.mkRef ({ data := bytes, pos := 0 } : IO.FS.Stream.Buffer)
++  let buf ← IO.mkRef ({ data := bodyBytes, pos := 0 } : IO.FS.Stream.Buffer) -- F2: without trailer
+   let exp ← try LeanExport.parseStream (IO.FS.Stream.ofBuffer buf)
+     catch e => decodeError s!"LeanExport parser: {e}"
+   if exp.constMap.size > cfg.maxConstants then
+@@ -287,14 +321,14 @@
+   let refuse (o : Outcome) (check : String) (name : Name) (detail : String) : Outcome :=
+     { o with reasons := o.reasons.push { check, name, detail } }
+   let mut new : Std.HashMap Name ConstantInfo := {}
+-  -- (a) trusted names: compare, then discard the export's copy.
++  -- (a) F2: a new-only export contains no trusted-named constant at all.
+   for n in exp.constOrder do
+     let some x := exp.constMap[n]? | continue
+     match env.find? n with
+     | some t =>
+       out := { out with trustedNamed := out.trustedNamed + 1 }
+-      if let some what := constDiff t x then
+-        out := refuse out "a" n s!"differs from the trusted {kindOf t} in its {what}"
++      out := refuse out "a" n
++        s!"the export contains the trusted {kindOf t} {n}; a new-only export holds none"
+     | none =>
+       new := new.insert n x
+       out := { out with newNames := out.newNames.push n }
+@@ -390,9 +424,11 @@
+     if isPrivateName n then users := users.insert user
+   return users
+ 
++-- F2: the owner's categories and authorities (#9, 2026-10-28).
+ def emit (verdict : String) (fields : List (String × Json)) : IO Unit :=
++  let authority := if verdict == "accepted" then "verified" else "verifier"
+   IO.println <| Json.compress <| Json.mkObj <|
+-    [("verdict", (verdict : Json)), ("authority", "verifier"), ("verifier", "f1-spike")] ++ fields
++    [("verdict", (verdict : Json)), ("authority", authority), ("verifier", "f2-spike")] ++ fields
+ 
+ def run (cfg : Config) (path : System.FilePath) : IO UInt32 := do
+   let t0 ← IO.monoMsNow
+@@ -411,7 +447,7 @@
+   let out ← check cfg env exp users
+   let t3 ← IO.monoMsNow
+   let accepted := out.reasons.isEmpty && out.kernelRan
+-  emit (if accepted then "accepted" else "refused") [
++  emit (if accepted then "accepted" else "policy_violation") [ -- F2
+     ("reasons", Json.arr (out.reasons.map Reason.toJson)),
+     ("axiomClosure", Json.arr (out.axiomClosure.map (Json.str ·.toString))),
+     ("kernelRan", out.kernelRan),
+@@ -425,13 +461,22 @@
+       ("kernel", out.kernelMs), ("total", t3 - t0)])]
+   return if accepted then 0 else 1
+ 
+-end F1
++-- F2: the pinned exercises (trusted configuration; in #9, from the exercise-family fixture).
++def exercises : List (String × Name) := [
++  ("graph-comp.comprehension", `LearnToProveIt.GraphComp.Comprehension.obligation),
++  ("graph-comp.reasoning", `LearnToProveIt.GraphComp.Reasoning.obligation),
++  ("graph-comp.transfer", `LearnToProveIt.GraphComp.Transfer.obligation)]
+ 
++end F2V
++
+ def main (args : List String) : IO UInt32 := do
+-  let [path] := args | do
+-    IO.eprintln "usage: f1verify <export.ndjson>"
++  let [exId, path] := args | do
++    IO.eprintln "usage: f2verify <exercise-id> <export.ndjson>"
+     return 2
+-  try F1.run {} path
++  let some obligation := F2V.exercises.lookup exId | do
++    F2V.emit "infrastructure_failure" [("error", s!"unknown exercise {exId}")]
++    return 2
++  try F2V.run { obligation } path
+   catch e => do
+-    F1.emit "infrastructure_failure" [("error", toString e)]
++    F2V.emit "infrastructure_failure" [("error", toString e)]
+     return 2

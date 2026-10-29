@@ -1,0 +1,22 @@
+# F2 spike, NON-PRODUCTION. Phase-1 driver (labelled checker copy plus new-only exporter) and the
+# phase-2 verifier (a copy of F1's, adapted). No dependencies beyond the toolchain: Mathlib and
+# learn-to-prove-it's modules are loaded at run time from LEAN_PATH (see env.sh).
+name = "f2"
+defaultTargets = ["f2phase1", "f2verify", "f2sha"]
+srcDir = "lean"
+
+[[lean_lib]]
+name = "F2"
+
+[[lean_exe]]
+name = "f2phase1"
+root = "F2Phase1"
+supportInterpreter = true
+
+[[lean_exe]]
+name = "f2verify"
+root = "F2Verify"
+
+[[lean_exe]]
+name = "f2sha"
+root = "F2Sha"
