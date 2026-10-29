@@ -55,7 +55,15 @@ config.setdefault("runtimes", {})["runsc"] = {
 }
 json.dump(config, open(path, "w"), indent=2)
 EOF
-sudo systemctl restart docker
+# The Sentry inherits its host RLIMIT_NOFILE from containerd (65536 on the
+# runner). import Mathlib maps ~36k module files and gVisor holds a host fd
+# for each, so the Sentry hits that limit. Raise it for the containerd unit.
+sudo mkdir -p /etc/systemd/system/containerd.service.d
+printf '[Service]\nLimitNOFILE=1048576\n' |
+  sudo tee /etc/systemd/system/containerd.service.d/f3-nofile.conf
+sudo systemctl daemon-reload
+sudo systemctl restart containerd docker
+systemctl show containerd -p LimitNOFILE
 echo "-- /etc/docker/daemon.json"
 sudo cat /etc/docker/daemon.json
 echo

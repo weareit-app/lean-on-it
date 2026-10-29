@@ -26,7 +26,7 @@ probe() {
   while [ "$(docker inspect --format '{{.State.Running}}' "$id")" = true ]; do
     n=$(sudo ls "/proc/$sentry/fd" 2>/dev/null | wc -l); [ "$n" -gt "$max_s" ] && max_s=$n
     n=$(sudo ls "/proc/$gofer/fd" 2>/dev/null | wc -l); [ "$n" -gt "$max_g" ] && max_g=$n
-    n=$(sudo wc -l <"/proc/$sentry/maps" 2>/dev/null || echo 0); [ "$n" -gt "$max_maps" ] && max_maps=$n
+    n=$(sudo sh -c "wc -l < /proc/$sentry/maps" 2>/dev/null || echo 0); [ "$n" -gt "$max_maps" ] && max_maps=$n
     sleep 0.3
   done
   echo "peak host fds: sentry=$max_s gofer=$max_g; peak sentry host mappings=$max_maps"
