@@ -40,7 +40,7 @@ run_one() {
     "$label" "$(docker inspect --format '{{.State.ExitCode}}' "$id")" \
     "$(docker inspect --format '{{.State.OOMKilled}}' "$id")" "$secs" \
     $((peak / 1048576)) $((file / 1048576)) $((anon / 1048576)) "$last_cpu" "$last_events"
-  docker logs "$id" 2>&1 | grep -v 'designed for use with the module system' | tail -2
+  docker logs "$id" 2>&1 | { grep -v 'designed for use with the module system' || true; } | tail -2
   docker rm -f "$id" >/dev/null
 }
 
