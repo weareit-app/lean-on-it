@@ -1,0 +1,31 @@
+# Spike F3 (non-production): gVisor isolation and limits for Lean on Linux.
+# Lives on the spike branch only and runs only on pushes to it. Not for main.
+name: Spike F3 gVisor
+
+on:
+  push:
+    branches: [spike/f3-gvisor]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spike-f3
+  cancel-in-progress: true
+
+jobs:
+  feasibility:
+    name: runsc install and runtime check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: bash spikes/f3/install-runsc.sh
+      - run: bash spikes/f3/feasibility.sh
+      - name: Clean up sandboxes
+        if: always()
+        run: |
+          docker ps -aq --filter name=f3- | xargs -r docker rm -f
+          ps -eo pid,args | grep runsc | grep -v grep || echo "no runsc processes"
