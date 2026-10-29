@@ -24,13 +24,17 @@ ENV PATH=/opt/lean/bin:$PATH
 WORKDIR /opt/work
 COPY lakefile.toml lean-toolchain Workload.lean ./
 # Mathlib at the v4.35.0 tag's commit; its manifest pins the other packages.
-# The cache is Mathlib's prebuilt .olean files.
+# The cache is Mathlib's prebuilt .olean files. It unpacks them readable by
+# root only, so they are opened up for the unprivileged sandbox user in the
+# same layer (a separate RUN would copy the 7 GB layer).
 RUN lake update \
  && cat lake-manifest.json \
  && lake exe cache get \
  && lake build \
  && lake env printenv LEAN_PATH > /opt/leanpath \
  && rm -rf /root/.cache \
+ && stat -c '%a %U %n' .lake/packages/mathlib/.lake/build/lib/lean/Mathlib.olean \
+ && chmod -R a+rX,go-w /opt/work /opt/lean /opt/leanpath \
  && find /opt/work/.lake -name '*.olean' | wc -l \
  && du -sh /opt/lean /opt/work/.lake
 
