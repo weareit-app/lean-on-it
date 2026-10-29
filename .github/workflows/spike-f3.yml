@@ -25,6 +25,8 @@ jobs:
       - run: bash spikes/f3/install-runsc.sh
       - run: bash spikes/f3/feasibility.sh
       - run: bash spikes/f3/workload.sh
+      - run: bash spikes/f3/diag-nofile.sh
+        if: always()
       - name: Clean up sandboxes
         if: always()
         run: |
