@@ -20,9 +20,21 @@ describe("createServer", () => {
     ]);
   });
 
+  it("names its own tools in kebab-case", async () => {
+    const client = await connect();
+    const { tools } = await client.listTools();
+    expect(tools.map((tool) => tool.name).sort()).toEqual([
+      "health",
+      "lean-tooling",
+    ]);
+    for (const tool of tools) {
+      expect(tool.name).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    }
+  });
+
   it("reports the lean-lsp-mcp launch without running it", async () => {
     const client = await connect();
-    const result = await client.callTool({ name: "lean_tooling" });
+    const result = await client.callTool({ name: "lean-tooling" });
     const text = (result.content as { text: string }[])[0]!.text;
     expect(JSON.parse(text).env.LEAN_MCP_DISABLED_TOOLS).toContain(
       "lean_run_code",

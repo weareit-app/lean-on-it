@@ -17,7 +17,7 @@ export function createServer(): McpServer {
     }),
   );
   server.registerTool(
-    "lean_tooling",
+    "lean-tooling",
     {
       title: "Lean tooling",
       description:
