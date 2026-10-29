@@ -1,0 +1,5 @@
+$ lake env leanchecker --fresh LearnToProveIt.Basic
+exit: 0
+--- stdout
+
+--- stderr

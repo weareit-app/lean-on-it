@@ -1,0 +1,5 @@
+$ lake env lean --json LearnToProveIt/Basic.lean
+exit: 0
+--- stdout
+
+--- stderr

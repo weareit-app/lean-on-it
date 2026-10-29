@@ -1,0 +1,6 @@
+name = "core_sample"
+defaultTargets = ["CoreSample"]
+
+[[lean_lib]]
+name = "CoreSample"
+globs = ["CoreSample.Good", "CoreSample.Sorry", "CoreSample.Axiom"]
