@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FidelityReview } from "./manifest.ts";
 import { attachFidelityReview } from "./review.ts";
 import { sampleManifest, sampleReview } from "./sample-manifest.ts";
-import { validateManifest } from "./validate.ts";
+import { deriveStatus, validateManifest } from "./validate.ts";
 
 function review(edit: (r: FidelityReview) => void = () => {}): FidelityReview {
   const r = sampleReview();
@@ -49,6 +49,32 @@ describe("attachFidelityReview", () => {
       r.reviewedTypeDigest = `sha256:${"e".repeat(64)}`;
     });
     expect(fidelityAfter(old)).toBe("stale");
+  });
+
+  it("treats a review as stale once the claim's content changes under the same id", () => {
+    const attached = attachFidelityReview(sampleManifest(), review());
+    if (!attached.ok) throw new Error(attached.errors.join("\n"));
+    const changed = structuredClone(attached.manifest);
+    changed.claim.assumptions.push("f is injective");
+    expect(changed.claim.id).toBe(attached.manifest.claim.id);
+    expect(deriveStatus(changed).fidelity.status).toBe("stale");
+  });
+
+  it("treats a review as stale once the claim's statement is reworded", () => {
+    const attached = attachFidelityReview(sampleManifest(), review());
+    if (!attached.ok) throw new Error(attached.errors.join("\n"));
+    const changed = structuredClone(attached.manifest);
+    changed.claim.statement =
+      "Composing a relation with a function's graph is substitution.";
+    expect(deriveStatus(changed).fidelity.status).toBe("stale");
+    expect(validateManifest(changed).ok).toBe(false);
+  });
+
+  it("treats a review of another claim version as stale", () => {
+    const other = review((r) => {
+      r.reviewedClaimDigest = `sha256:${"f".repeat(64)}`;
+    });
+    expect(fidelityAfter(other)).toBe("stale");
   });
 
   it("only AI-screens on an AI faithful review", () => {

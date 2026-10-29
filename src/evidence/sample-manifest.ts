@@ -4,7 +4,13 @@ import type { EvidenceManifest, FidelityReview } from "./manifest.ts";
 
 const hex = (c: string) => `sha256:${c.repeat(64)}`;
 
-export const SAMPLE_TYPE_DIGEST = hex("a");
+// Computed outside this code: `printf '%s' '@Eq.{1} Nat 1 1' | shasum -a 256`.
+export const SAMPLE_TYPE_DIGEST =
+  "sha256:62e2f575c91321fb2e599684d042b4a11d0afaf75ea13c19994eaa19fdbb5593";
+// Computed outside this code: the sample claim through `jq -S -c`, then
+// `shasum -a 256`.
+export const SAMPLE_CLAIM_DIGEST =
+  "sha256:1dd29e885115aab6f075c61b1b122d9a130869f9072389148b92ebb46f3e1e58";
 
 export function sampleManifest(): EvidenceManifest {
   return {
@@ -110,6 +116,7 @@ export function sampleReview(): FidelityReview {
     claimId: "claim:sample",
     declarationId: "declaration:Sample.thm",
     reviewedTypeDigest: SAMPLE_TYPE_DIGEST,
+    reviewedClaimDigest: SAMPLE_CLAIM_DIGEST,
     reviewer: { id: "reviewer@example", kind: "human" },
     independence: {
       participatedInFormalization: false,

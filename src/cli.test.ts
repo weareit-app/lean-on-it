@@ -11,7 +11,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { writeBundle } from "./evidence/bundle.ts";
-import { sampleManifest, sampleReview } from "./evidence/sample-manifest.ts";
+import {
+  SAMPLE_CLAIM_DIGEST,
+  SAMPLE_TYPE_DIGEST,
+  sampleManifest,
+  sampleReview,
+} from "./evidence/sample-manifest.ts";
 
 const FIXTURE = new URL("../fixtures/lean/core-sample", import.meta.url)
   .pathname;
@@ -36,6 +41,8 @@ describe("lean-on-it validate", () => {
     expect(code).toBe(0);
     expect(out).toMatch(/kernel: kernel_checked/);
     expect(out).toMatch(/fidelity: not_reviewed/);
+    expect(out).toContain(`claim digest: ${SAMPLE_CLAIM_DIGEST}`);
+    expect(out).toContain(`elaborated type digest: ${SAMPLE_TYPE_DIGEST}`);
   });
 
   it("rejects a hand-edited approval, with the reason", () => {

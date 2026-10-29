@@ -16,7 +16,7 @@ export const SERVER_NAME = "lean-on-it";
 export interface ServerOptions {
   /**
    * Roots the operator trusts, fixed when the server starts. With none,
-   * verify_declaration refuses every call and no Lean runs.
+   * verify-declaration refuses every call and no Lean runs.
    */
   trustedRoots?: readonly string[];
   /** Who runs verifications; recorded so they cannot later review fidelity. */
@@ -55,7 +55,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
     }),
   );
   server.registerTool(
-    "verify_declaration",
+    "verify-declaration",
     {
       title: "Verify a declaration",
       description:
@@ -107,7 +107,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
     },
   );
   server.registerTool(
-    "validate_manifest",
+    "validate-manifest",
     {
       title: "Validate an evidence manifest",
       description:

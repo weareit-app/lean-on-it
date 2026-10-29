@@ -831,6 +831,10 @@
             "type": "string",
             "pattern": "^sha256:[0-9a-f]{64}$"
           },
+          "reviewedClaimDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
           "reviewer": {
             "type": "object",
             "properties": {
@@ -956,6 +960,7 @@
           "claimId",
           "declarationId",
           "reviewedTypeDigest",
+          "reviewedClaimDigest",
           "reviewer",
           "independence",
           "readback",

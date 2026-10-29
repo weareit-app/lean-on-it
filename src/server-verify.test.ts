@@ -47,11 +47,11 @@ const verifyArgs = () => ({
   claim: sampleManifest().claim,
 });
 
-describe("verify_declaration", () => {
+describe("verify-declaration", () => {
   it("refuses every call when no roots are configured, launching nothing", async () => {
     const client = await connect({ trustedRoots: [] });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: verifyArgs(),
     });
     expect(result.isError).toBe(true);
@@ -63,7 +63,7 @@ describe("verify_declaration", () => {
     const other = mkdtempSync(join(tmpdir(), "lean-on-it-mcp-other-"));
     const client = await connect({ trustedRoots: [other] });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: verifyArgs(),
     });
     expect(result.isError).toBe(true);
@@ -76,7 +76,7 @@ describe("verify_declaration", () => {
       trustedRoots: [join(root, "core-sample", "CoreSample")],
     });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: {
         ...verifyArgs(),
         workspace: join(root, "core-sample", "CoreSample", ".."),
@@ -92,7 +92,7 @@ describe("verify_declaration", () => {
       operator: "op@example",
     });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: verifyArgs(),
     });
     expect(JSON.parse(text(result)).manifest.verification.operator).toBe(
@@ -104,7 +104,7 @@ describe("verify_declaration", () => {
     const hidden = join(root, "private-research-root");
     const client = await connect({ trustedRoots: [hidden] });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: verifyArgs(),
     });
     expect(result.isError).toBe(true);
@@ -115,7 +115,7 @@ describe("verify_declaration", () => {
   it("does not let tool arguments add trusted roots", async () => {
     const client = await connect({ trustedRoots: [] });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: { ...verifyArgs(), trustedRoots: [root] },
     });
     expect(result.isError).toBe(true);
@@ -125,7 +125,7 @@ describe("verify_declaration", () => {
   it("runs inside a configured root and returns a manifest", async () => {
     const client = await connect({ trustedRoots: [root] });
     const result = await client.callTool({
-      name: "verify_declaration",
+      name: "verify-declaration",
       arguments: verifyArgs(),
     });
     expect(result.isError).toBeFalsy();
@@ -142,11 +142,11 @@ describe("verify_declaration", () => {
   });
 });
 
-describe("validate_manifest", () => {
+describe("validate-manifest", () => {
   it("accepts a valid manifest", async () => {
     const client = await connect({});
     const result = await client.callTool({
-      name: "validate_manifest",
+      name: "validate-manifest",
       arguments: { manifest: sampleManifest() },
     });
     expect(result.isError).toBeFalsy();
@@ -158,7 +158,7 @@ describe("validate_manifest", () => {
     manifest.status.fidelity = { status: "approved", reasons: [] };
     const client = await connect({});
     const result = await client.callTool({
-      name: "validate_manifest",
+      name: "validate-manifest",
       arguments: { manifest },
     });
     expect(result.isError).toBe(true);
@@ -169,6 +169,16 @@ describe("validate_manifest", () => {
 });
 
 describe("tool policy", () => {
+  it("names the evidence tools in kebab-case", async () => {
+    const client = await connect({});
+    const names = (await client.listTools()).tools.map((t) => t.name);
+    expect(names).toEqual(
+      expect.arrayContaining(["verify-declaration", "validate-manifest"]),
+    );
+    expect(names).not.toContain("verify_declaration");
+    expect(names).not.toContain("validate_manifest");
+  });
+
   it("leaves the lean-lsp-mcp disabled-tools list unchanged", () => {
     expect(leanLspLaunch().env.LEAN_MCP_DISABLED_TOOLS).toBe(
       DEFAULT_DISABLED_TOOLS.join(","),

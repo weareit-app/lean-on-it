@@ -30,6 +30,16 @@ describe("validateManifest", () => {
     expect(errorsOf(manifest).join("\n")).toMatch(/schemaVersion/);
   });
 
+  it("rejects an elaborated type whose text no longer matches its digest", () => {
+    const manifest = edited((m) => {
+      if (m.declaration.elaboratedType.status !== "captured") throw new Error();
+      m.declaration.elaboratedType.explicit = "@Eq.{1} Nat 1 2";
+    });
+    expect(errorsOf(manifest).join("\n")).toMatch(
+      /elaborated type does not match its digest/,
+    );
+  });
+
   it("rejects a run that refers to another declaration", () => {
     const manifest = edited((m) => {
       m.verification.declarationId = "declaration:Other";

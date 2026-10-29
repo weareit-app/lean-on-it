@@ -8,11 +8,13 @@ import {
   type FidelityReview,
   type FidelityStatus,
   type FormalDeclaration,
+  type IntendedClaim,
   type KernelStatus,
   STEP_IDS,
   type StatusSummary,
   type VerificationRun,
 } from "./manifest.ts";
+import { claimDigest, sha256 } from "./digest.ts";
 
 export type ValidationResult =
   | { ok: true; manifest: EvidenceManifest }
@@ -24,6 +26,7 @@ interface Derived<S> {
 }
 
 export interface StatusInputs {
+  claim: IntendedClaim;
   declaration: FormalDeclaration;
   verification: VerificationRun;
   fidelityReviews: FidelityReview[];
@@ -34,6 +37,7 @@ export function deriveStatus(records: StatusInputs): StatusSummary {
   return {
     kernel: deriveKernelStatus(records.declaration, records.verification),
     fidelity: deriveFidelityStatus(
+      records.claim,
       records.declaration,
       records.fidelityReviews,
     ),
@@ -123,7 +127,10 @@ function approvalBlockers(review: FidelityReview): string[] {
   return blockers;
 }
 
+// A review binds two statements: the intended claim and the elaborated type.
+// Changing either one, even under the same id, leaves the review stale.
 function deriveFidelityStatus(
+  claim: IntendedClaim,
   declaration: FormalDeclaration,
   reviews: FidelityReview[],
 ): Derived<FidelityStatus> {
@@ -134,15 +141,24 @@ function deriveFidelityStatus(
     };
   const type = declaration.elaboratedType;
   const currentDigest = type.status === "captured" ? type.digest : null;
-  const current = reviews.filter((r) => r.reviewedTypeDigest === currentDigest);
+  const currentClaim = claimDigest(claim);
+  const current = reviews.filter(
+    (r) =>
+      r.reviewedTypeDigest === currentDigest &&
+      r.reviewedClaimDigest === currentClaim,
+  );
   if (current.length === 0)
     return {
       status: "stale",
-      reasons: [
-        currentDigest
-          ? "every review is of an elaborated type other than the current one"
-          : "the current elaborated type was not captured, so no review can be bound to it",
-      ],
+      reasons: currentDigest
+        ? reviews.map((r) =>
+            r.reviewedTypeDigest !== currentDigest
+              ? `${r.id} reviewed an elaborated type other than the current one`
+              : `${r.id} reviewed a version of the intended claim other than the current one`,
+          )
+        : [
+            "the current elaborated type was not captured, so no review can be bound to it",
+          ],
     };
 
   const objections = current.filter((r) => r.verdict === "not_faithful");
@@ -192,6 +208,13 @@ function crossReferenceErrors(manifest: EvidenceManifest): string[] {
   if (manifest.verification.declarationId !== declarationId)
     errors.push(
       `verification.declarationId "${manifest.verification.declarationId}" does not match declaration.id "${declarationId}"`,
+    );
+  // The digest is only as good as the run that produced the text, but a
+  // manifest whose text and digest disagree is inconsistent on its face.
+  const type = manifest.declaration.elaboratedType;
+  if (type.status === "captured" && sha256(type.explicit) !== type.digest)
+    errors.push(
+      `declaration.elaboratedType: the elaborated type does not match its digest ${type.digest}`,
     );
   const forbidden = selfReviewers(manifest);
   const seen = new Set<string>();

@@ -166,7 +166,10 @@ export const fidelityReviewSchema = z.strictObject({
   id: text,
   claimId: text,
   declarationId: text,
+  /** Digest of the elaborated type's explicit text that the reviewer read. */
   reviewedTypeDigest: digestSchema,
+  /** Digest of the canonical JSON of the whole intended claim record. */
+  reviewedClaimDigest: digestSchema,
   reviewer: z.strictObject({
     id: text,
     kind: z.enum(["human", "ai_model"]),

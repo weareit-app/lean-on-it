@@ -25,7 +25,7 @@ A fidelity review is a separate act by someone other than the formalizer and the
 pnpm lean-on-it review <bundle-dir> <review.json>
 ```
 
-The review must name the elaborated-type digest it read; a review of an older digest counts as stale. File each discrepancy as a typed finding (`missing_hypothesis`, `added_or_restrictive_hypothesis`, `quantifier_mismatch`, `definitional_mismatch`, `conclusion_mismatch`, `vacuity`, `undetermined`). Only a blind, independent human `faithful` verdict approves; an AI review screens.
+The review binds two statements, so it names two digests, both printed by `validate`: `reviewedTypeDigest`, the sha256 of the elaborated type's explicit text, and `reviewedClaimDigest`, the sha256 of the intended claim record in canonical JSON (keys sorted, no whitespace; the same as `jq -S -c`). Changing either the Lean statement or the claim, even under the same claim id, makes the review stale. File each discrepancy as a typed finding (`missing_hypothesis`, `added_or_restrictive_hypothesis`, `quantifier_mismatch`, `definitional_mismatch`, `conclusion_mismatch`, `vacuity`, `undetermined`). Only a blind, independent human `faithful` verdict approves; an AI review screens.
 
 ## Validate
 
@@ -37,7 +37,7 @@ Checks the schema, that the stated statuses are the ones the records support, an
 
 ## MCP
 
-Start the server with roots and, optionally, your identity: `node src/main.ts --trusted-root <root> --operator <id>`. It speaks stdio only. `verify_declaration` returns the manifest and its artifacts (left out above 4 MiB; the digests stay in the manifest) and refuses every call when no root is configured; errors other than refusals are reported without detail, so host paths stay on the server. `validate_manifest` runs nothing.
+Start the server with roots and, optionally, your identity: `node src/main.ts --trusted-root <root> --operator <id>`. It speaks stdio only. `verify-declaration` returns the manifest and its artifacts (left out above 4 MiB; the digests stay in the manifest) and refuses every call when no root is configured; errors other than refusals are reported without detail, so host paths stay on the server. `validate-manifest` runs nothing.
 
 ## Known limits
 

@@ -14,6 +14,7 @@ import {
   writeBundle,
   writeManifest,
 } from "./evidence/bundle.ts";
+import { claimDigest } from "./evidence/digest.ts";
 import type { EvidenceManifest } from "./evidence/manifest.ts";
 import { attachFidelityReview } from "./evidence/review.ts";
 import {
@@ -45,8 +46,13 @@ function readJson(path: string, what: string): unknown {
 
 function summary(manifest: EvidenceManifest): string {
   const { kernel, fidelity } = manifest.status;
+  const type = manifest.declaration.elaboratedType;
   return [
     `declaration: ${manifest.declaration.name}`,
+    // What a fidelity review must name as reviewedClaimDigest and
+    // reviewedTypeDigest.
+    `claim digest: ${claimDigest(manifest.claim)}`,
+    `elaborated type digest: ${type.status === "captured" ? type.digest : "unavailable"}`,
     `kernel: ${kernel.status}`,
     ...kernel.reasons.map((r) => `  - ${r}`),
     `fidelity: ${fidelity.status}`,
